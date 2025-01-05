@@ -5,7 +5,6 @@ import java.awt.*;
 
 import javax.swing.JLabel;
 
-
 //To be changed to the actual welcome screen
 public class WelcomeScreen extends Screen {
     @Override
