@@ -1,4 +1,4 @@
-// Screen.java
+// Parent Class
 package UI;
 
 import javax.swing.*;

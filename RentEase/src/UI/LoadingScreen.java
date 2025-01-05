@@ -1,4 +1,4 @@
-
+//Child class of Screen
 package UI;
 
 import java.awt.*;
