@@ -13,7 +13,7 @@ public abstract class Screen {
     
     protected void initializePanel() {
         panel = new JPanel();
-        panel.setLayout(null); // Or any layout you prefer
+        panel.setLayout(null);
     }
     
     public JPanel getPanel() {

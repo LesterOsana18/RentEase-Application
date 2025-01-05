@@ -1,4 +1,4 @@
-
+//Application frame that contains the main frame of the application and other components
 package UI;
 
 import javax.swing.*;

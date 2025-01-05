@@ -9,7 +9,6 @@ public class LoadingScreen extends Screen {
     protected void customizePanel() {
         panel.setBackground(Color.decode("#FE724C"));
         
-        // Create and setup the icon
         ImageIcon icon = new ImageIcon("../resources/icon.png");
         JLabel iconLabel = new JLabel(icon);
 
@@ -17,7 +16,6 @@ public class LoadingScreen extends Screen {
         appName.setFont(new Font("PhosphateInline", Font.PLAIN, 40));
         appName.setForeground(Color.WHITE);
         
-        // Center the icon
         int x = (375 - icon.getIconWidth()) / 2;
         int y = (812 - icon.getIconHeight()) / 2;
         
