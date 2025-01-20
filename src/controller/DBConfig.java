@@ -17,6 +17,12 @@ import javafx.stage.Stage;
 
 public class DBConfig {
 	
+	private static final String URL = "jdbc:mysql://localhost:3306/rentease_application";
+    private static final String USER = "root";
+    private static final String PASSWORD = "1123";
+    //Lester Password: LesterOsana.18
+    //Rendel Password: 1123
+	
 	public static void changeScene(ActionEvent event, String fxmlFile, String title, String username) {
 		Parent root = null;
 		
@@ -48,10 +54,7 @@ public class DBConfig {
 		ResultSet resultSet = null;
 		
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "1123");
-			// Change the username "root" and password "LesterOsana.18" depending on your configuration of the MySQL Workbench for the database
-			// connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "LesterOsana.18");
-			// connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "1123");
+			connection = DriverManager.getConnection(URL, USER, PASSWORD);
 			psCheckUserExists = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
 			psCheckUserExists.setString(1, username);
 			resultSet = psCheckUserExists.executeQuery();
@@ -108,10 +111,7 @@ public class DBConfig {
 		ResultSet resultSet = null;
 		
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "1123");
-			// Change the username "root" and password "LesterOsana.18" depending on your configuration of the MySQL Workbench for the database
-			// connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "LesterOsana.18");
-			// connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "1123");
+			connection = DriverManager.getConnection(URL, USER, PASSWORD);
 			preparedStatement = connection.prepareStatement("SELECT username FROM users WHERE username = ?");
 			preparedStatement.setString(1, username);
 			resultSet = preparedStatement.executeQuery();
