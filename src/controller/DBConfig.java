@@ -19,9 +19,17 @@ public class DBConfig {
 	
 	private static final String URL = "jdbc:mysql://localhost:3306/rentease_application";
     private static final String USER = "root";
-    private static final String PASSWORD = "1123";
-    //Lester Password: LesterOsana.18
-    //Rendel Password: 1123
+    private static String PASSWORD = "";
+    
+    static {
+        int user = 2; // Set the user value here
+
+        if (user == 1) {
+            PASSWORD = "LesterOsana.18";
+        } else if (user == 2) {
+            PASSWORD = "1123";
+        }
+    }
 	
 	public static void changeScene(ActionEvent event, String fxmlFile, String title, String username) {
 		Parent root = null;
