@@ -18,7 +18,6 @@ public class Main extends Application {
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("/controller/LoginView.fxml"));
 			Scene scene = new Scene(root, 1200, 780);
-			scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/imgs/logo.png")));
 			primaryStage.setTitle("RentEase: Simplifying Rent and Utility Management");
 			primaryStage.setScene(scene);

@@ -48,9 +48,10 @@ public class DBConfig {
 		ResultSet resultSet = null;
 		
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "LesterOsana.18");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "1123");
 			// Change the username "root" and password "LesterOsana.18" depending on your configuration of the MySQL Workbench for the database
 			// connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "LesterOsana.18");
+			// connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "1123");
 			psCheckUserExists = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
 			psCheckUserExists.setString(1, username);
 			resultSet = psCheckUserExists.executeQuery();
@@ -107,9 +108,10 @@ public class DBConfig {
 		ResultSet resultSet = null;
 		
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "LesterOsana.18");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "1123");
 			// Change the username "root" and password "LesterOsana.18" depending on your configuration of the MySQL Workbench for the database
 			// connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "LesterOsana.18");
+			// connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/rentease_application", "root", "1123");
 			preparedStatement = connection.prepareStatement("SELECT username FROM users WHERE username = ?");
 			preparedStatement.setString(1, username);
 			resultSet = preparedStatement.executeQuery();
@@ -124,7 +126,7 @@ public class DBConfig {
 					String retrievedUsername = resultSet.getString("username");
 					
 					if (retrievedUsername.equals(username)) {
-						changeScene(event, "/controller/DummyDashboard.fxml", "Dashboard", null);
+						changeScene(event, "/controller/DashboardView.fxml", "Dashboard", null);
 					} 
 					}
 				} 
