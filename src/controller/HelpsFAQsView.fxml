@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox prefHeight="80.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Helps_FAQsController">
+<HBox prefHeight="80.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HelpsFAQsController">
    <children>
       <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: FFF1EE;">
          <children>
@@ -189,11 +189,7 @@
                         <Font name="SofiaPro" size="19.0" />
                      </font>
                   </Text>
-                  <Button fx:id="help_btn" layoutX="818.0" layoutY="526.0" mnemonicParsing="false" onAction="#help_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67;" stylesheets="@../styles/invoice.css" text="Help" textFill="WHITE" wrapText="true">
-                     <font>
-                        <Font name="SofiaPro-SemiBold" size="11.11" />
-                     </font>
-                  </Button>
+                  <Button layoutX="805.0" layoutY="523.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="112.0" style="-fx-background-radius: 20;" stylesheets="@../styles/invoice.css" text="Help" />
                </children>
             </Pane>
          </children>

@@ -1,12 +1,11 @@
 package controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
-public class Helps_FAQsController {
+public class HelpsFAQsController {
 
     @FXML
     private Text balance_due_btn;
@@ -21,7 +20,7 @@ public class Helps_FAQsController {
     private Text edit_invoice_btn;
 
     @FXML
-    private Button help_btn;
+    private Text help_btn;
 
     @FXML
     private Button logout_btn;
@@ -53,7 +52,7 @@ public class Helps_FAQsController {
     }
 
     @FXML
-    void help_btn_clicked(ActionEvent event) {
+    void help_btn_clicked(MouseEvent event) {
 
     }
 
