@@ -125,7 +125,7 @@
                   </Text>
                </children>
             </Pane>
-            <Text fill="#2b3674" layoutX="224.31" layoutY="64.61" strokeType="OUTSIDE" strokeWidth="0.0" text="Main Dashboard">
+            <Text fill="#2b3674" layoutX="224.31" layoutY="64.61" strokeType="OUTSIDE" strokeWidth="0.0" text="Payment History">
                <font>
                   <Font name="SofiaPro-SemiBold" size="27.78" />
                </font>
