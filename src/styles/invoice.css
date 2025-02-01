@@ -44,7 +44,7 @@
     -fx-prompt-text-fill: #2B3674;
     -fx-text-fill: #2B3674;
     -fx-background-color: transparent;
-    -fx-border-color: #FE724C;  /* Outer border */
+    -fx-border-color: #FE724C;  
     -fx-border-width: 2px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
@@ -61,24 +61,17 @@
     -fx-padding: 0;               
 }
 
-.date-picker:focused {
-    -fx-border-color: #FE724C;
-}
-
 .date-picker .arrow-button {
-    -fx-background-color: transparent;
+    -fx-background-color: transparent !important;
     -fx-border-color: transparent;
 }
 
-.date-picker .arrow-button:hover {
-    -fx-background-color: #FE724C;
-}
 
 .date-picker .arrow {
-    -fx-background-color: #2B3674;
+    -fx-background-color: #2B3674 !important;
 }
 
-.button {
+.btn-button {
     -fx-font-family: "Sofia Pro";
     -fx-font-size: 15px;
     -fx-background-color: #FE724C;
@@ -91,7 +84,7 @@
     -fx-transition: all 0.2s ease-in-out; 
 }
 
-.button:pressed {
+.btn-button:pressed {
     -fx-background-color: #CE5D3D; 
 }
 

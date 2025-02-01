@@ -155,7 +155,7 @@
                         <Font name="SofiaPro" size="13.19" />
                      </font>
                   </TextField>
-                  <Button fx:id="edit_btn" layoutX="795.0" layoutY="145.0" mnemonicParsing="false" onAction="#edit_btn_clicked" onMouseClicked="#logout_btn_clicked" prefHeight="40.0" prefWidth="117.0" style="-fx-background-radius: 16.67;" stylesheets="@../styles/invoice.css" text="SAVE" textFill="WHITE" wrapText="true">
+                  <Button fx:id="save_btn" layoutX="795.0" layoutY="145.0" mnemonicParsing="false" onAction="#save_btn_clicked" onMouseClicked="#logout_btn_clicked" prefHeight="40.0" prefWidth="117.0" style="-fx-background-radius: 16.67;" styleClass="btn-button" stylesheets="@../styles/invoice.css" text="SAVE" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
@@ -179,7 +179,7 @@
                         <Font name="SofiaPro" size="17.0" />
                      </font>
                   </Text>
-                  <Button fx:id="edit_btn1" layoutX="795.0" layoutY="145.0" mnemonicParsing="false" onAction="#edit_btn_clicked" onMouseClicked="#logout_btn_clicked" prefHeight="40.0" prefWidth="117.0" style="-fx-background-radius: 16.67; -fx-background-color: CC0C0C;" stylesheets="@../styles/invoice.css" text="Delete" textFill="WHITE" wrapText="true">
+                  <Button fx:id="delete_btn" layoutX="795.0" layoutY="145.0" mnemonicParsing="false" onAction="#delete_btn" prefHeight="40.0" prefWidth="117.0" style="-fx-background-radius: 16.67; -fx-background-color: CC0C0C;" styleClass="btn-button" stylesheets="@../styles/invoice.css" text="Delete" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
