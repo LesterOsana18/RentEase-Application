@@ -109,7 +109,7 @@
                         <Image url="@../imgs/EditInvoice.png" />
                      </image>
                   </ImageView>
-                  <Button fx:id="logout_btn" layoutX="33.33" layoutY="697.92" mnemonicParsing="false" onMouseClicked="#logout_btn_clicked" prefHeight="30.0" prefWidth="127.78" style="-fx-background-radius: 16.67; -fx-background-color: FE724C;" styleClass="logout_btn" stylesheets="@../styles/dashboard.css" text="Logout" textFill="WHITE" wrapText="true">
+                  <Button fx:id="logout_btn" layoutX="33.33" layoutY="697.92" mnemonicParsing="false" onMouseClicked="#logout_btn_clicked" prefHeight="30.0" prefWidth="127.78" style="-fx-background-radius: 16.67;" styleClass="logout_btn" stylesheets="@../styles/dashboard.css" text="Logout" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>

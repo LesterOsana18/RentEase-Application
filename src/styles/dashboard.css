@@ -3,6 +3,11 @@
 	-fx-font-weight: Bold; 
 	-fx-text-fill: white;  
 	-fx-cursor: hand; 
+	-fx-background-color: #FE724C; 
+}
+
+.logout_btn:pressed {
+    -fx-background-color: #CE5D3D; 
 }
 
 .seeAll_Btn{
