@@ -76,7 +76,7 @@
                   </Text>
                   <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="119.83" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../imgs/DashboardIcon_Orange.png" />
+                        <Image url="@../imgs/DashboardIcon%20(Orange).png" />
                      </image>
                   </ImageView>
                   <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="189.83" pickOnBounds="true" preserveRatio="true">

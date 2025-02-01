@@ -1,6 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="780.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" />
+<HBox prefHeight="80.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PaymentHistoryController">
+   <children>
+      <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: FFF1EE;">
+         <children>
+            <Pane prefHeight="780.0" prefWidth="201.39" style="-fx-background-color: white;">
+               <children>
+                  <ImageView fitHeight="52.08" fitWidth="148.17" layoutX="21.53" layoutY="23.61" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imgs/SideBarLogo.png" />
+                     </image>
+                  </ImageView>
+                  <Line endX="201.8999786376953" endY="111.76667022705078" layoutY="-19.0" startX="-1.1189778888365254E-5" startY="111.76667022705078" stroke="#f4f7fe" />
+                  <Text fx:id="dashboard_btn" fill="#a3aed0" layoutX="47.92" layoutY="132.75" onMouseClicked="#dashboard_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Dashboard">
+                     <font>
+                        <Font name="SofiaPro-SemiBold" size="11.11" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Text>
+                  <Text fx:id="payment_history_btn" fill="#2b3674" layoutX="47.92" layoutY="167.75" onMouseClicked="#payment_history_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Payment History">
+                     <font>
+                        <Font name="SofiaPro-SemiBold" size="11.11" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Text>
+                  <Text fx:id="balance_due_btn" fill="#a3aed0" layoutX="47.92" layoutY="202.75" onMouseClicked="#balance_due_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Balance Due">
+                     <font>
+                        <Font name="SofiaPro-SemiBold" size="11.11" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Text>
+                  <Text fx:id="create_invoice_btn" fill="#a3aed0" layoutX="47.92" layoutY="237.75" onMouseClicked="#create_invoice_btn" strokeType="OUTSIDE" strokeWidth="0.0" text="Create Invoice">
+                     <font>
+                        <Font name="SofiaPro-SemiBold" size="11.11" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Text>
+                  <Text fx:id="help_btn" fill="#a3aed0" layoutX="47.92" layoutY="307.75" onMouseClicked="#help_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Helps &amp; FAQs">
+                     <font>
+                        <Font name="SofiaPro-SemiBold" size="11.11" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Text>
+                  <Text fx:id="my_profile_btn" fill="#a3aed0" layoutX="47.92" layoutY="342.75" onMouseClicked="#my_profile_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="My Profile">
+                     <font>
+                        <Font name="SofiaPro-SemiBold" size="11.11" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Text>
+                  <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="119.83" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imgs/DashboardIcon.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="189.83" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imgs/BalanceDueIcon.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="224.83" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imgs/CreateInvoiceIcon.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="294.83" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imgs/HelpsFAQsIcon.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="154.83" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imgs/PaymentHistoryIcon%20(Orange).png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="329.83" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imgs/MyProfileIcon.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="259.83" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imgs/EditInvoice.png" />
+                     </image>
+                  </ImageView>
+                  <Button fx:id="logout_btn" layoutX="33.33" layoutY="697.92" mnemonicParsing="false" onMouseClicked="#logout_btn_clicked" prefHeight="30.0" prefWidth="127.78" style="-fx-background-radius: 16.67; -fx-background-color: FE724C;" styleClass="logout_btn" stylesheets="@../styles/dashboard.css" text="Logout" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="SofiaPro-SemiBold" size="11.11" />
+                     </font>
+                  </Button>
+                  <Line endX="38.499969482421875" endY="19.199996948242188" layoutX="162.0" layoutY="156.0" startX="38.499969482421875" startY="-3.4000015258789062" stroke="#fe724c" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="3.0" />
+                  <Text fx:id="edit_invoice_btn" fill="#a3aed0" layoutX="47.92" layoutY="272.75" onMouseClicked="#edit_invoice_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Invoice">
+                     <font>
+                        <Font name="SofiaPro-SemiBold" size="11.11" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Text>
+               </children>
+            </Pane>
+            <Text fill="#2b3674" layoutX="224.31" layoutY="64.61" strokeType="OUTSIDE" strokeWidth="0.0" text="Main Dashboard">
+               <font>
+                  <Font name="SofiaPro-SemiBold" size="27.78" />
+               </font>
+            </Text>
+            <Text fill="#707eae" layoutX="224.31" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pages / Dashboard">
+               <font>
+                  <Font name="SofiaPro-SemiBold" size="13.89" />
+               </font>
+            </Text>
+            <Text fill="#454d83" layoutX="730.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Simplifying Your Rent and Utility Management">
+               <font>
+                  <Font name="SofiaPro" size="20.83" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+   </children>
+</HBox>
