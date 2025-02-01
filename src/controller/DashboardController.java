@@ -157,7 +157,7 @@ public class DashboardController {
     void help_btn_clicked(MouseEvent event) {
         try {
             // Load the Helps & FAQs FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/HelpsFaqsView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/HelpsFAQsView.fxml"));
             Parent Helps_FaqsRoot = loader.load();
 
             // Get the current stage (window) from the event source
