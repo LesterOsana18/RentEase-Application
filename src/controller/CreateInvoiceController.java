@@ -12,6 +12,9 @@ import javafx.scene.text.Text;
 public class CreateInvoiceController {
 
     @FXML
+    private Button add_btn;
+
+    @FXML
     private Text balance_due_btn;
 
     @FXML
@@ -34,9 +37,6 @@ public class CreateInvoiceController {
 
     @FXML
     private Button logout_btn;
-
-    @FXML
-    private Button logout_btn1;
 
     @FXML
     private CheckBox monthly_advance_chk_box;
@@ -88,6 +88,11 @@ public class CreateInvoiceController {
 
     @FXML
     private TextField wifi_text_field;
+
+    @FXML
+    void add_btn_clicked(ActionEvent event) {
+
+    }
 
     @FXML
     void balance_due_btn_clicked(MouseEvent event) {

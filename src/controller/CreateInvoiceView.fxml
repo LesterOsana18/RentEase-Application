@@ -246,7 +246,7 @@
                         <Font name="SofiaPro" size="20.64" />
                      </font>
                   </Text>
-                  <Button fx:id="logout_btn1" layoutX="813.0" layoutY="549.0" mnemonicParsing="false" onMouseClicked="#logout_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67;" stylesheets="@../styles/invoice.css" text="ADD" textFill="WHITE" wrapText="true">
+                  <Button fx:id="add_btn" layoutX="813.0" layoutY="549.0" mnemonicParsing="false" onAction="#add_btn_clicked" onMouseClicked="#logout_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67;" stylesheets="@../styles/invoice.css" text="ADD" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
