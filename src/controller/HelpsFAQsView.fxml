@@ -116,7 +116,7 @@
                         <String fx:value="button" />
                      </styleClass>
                   </Button>
-                  <Line endX="38.499969482421875" endY="19.199996948242188" layoutX="162.0" layoutY="226.0" startX="38.499969482421875" startY="-3.4000015258789062" stroke="#fe724c" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="3.0" />
+                  <Line endX="38.499969482421875" endY="19.199996948242188" layoutX="162.0" layoutY="295.0" startX="38.499969482421875" startY="-3.4000015258789062" stroke="#fe724c" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="3.0" />
                   <Text fx:id="edit_invoice_btn" fill="#a3aed0" layoutX="47.92" layoutY="272.75" onMouseClicked="#edit_invoice_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Invoice">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
