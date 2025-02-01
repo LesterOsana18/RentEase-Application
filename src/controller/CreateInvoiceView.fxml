@@ -188,14 +188,14 @@
                      </font>
                   </Text>
                   <CheckBox fx:id="monthly_deposit_chk_box" layoutX="28.0" layoutY="272.0" mnemonicParsing="false" onAction="#monthly_deposit_chk_box_clicked" stylesheets="@../styles/invoice.css" />
-                  <TextField fx:id="monthly_deposit_text" layoutX="67.0" layoutY="263.0" maxWidth="37.53" prefHeight="40.28" stylesheets="@../styles/invoice.css" />
+                  <TextField fx:id="monthly_deposit_text" disable="true" layoutX="67.0" layoutY="263.0" maxWidth="37.53" prefHeight="40.28" stylesheets="@../styles/invoice.css" />
                   <Text fill="#2b3674" layoutX="114.2" layoutY="288.58" strokeType="OUTSIDE" strokeWidth="0.0" text="MONTH/S DEPOSIT">
                      <font>
                         <Font name="SofiaPro" size="13.19" />
                      </font>
                   </Text>
                   <CheckBox fx:id="monthly_advance_chk_box" layoutX="259.0" layoutY="272.0" mnemonicParsing="false" onAction="#monthly_advance_chk_box_clicked" stylesheets="@../styles/invoice.css" />
-                  <TextField fx:id="monthly_advance_text" layoutX="298.0" layoutY="263.0" maxWidth="37.53" prefHeight="40.28" stylesheets="@../styles/invoice.css" />
+                  <TextField fx:id="monthly_advance_text" disable="true" layoutX="298.0" layoutY="263.0" maxWidth="37.53" prefHeight="40.28" stylesheets="@../styles/invoice.css" />
                   <Text fill="#2b3674" layoutX="345.0" layoutY="288.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MONTH/S ADVANCE PAYMENT">
                      <font>
                         <Font name="SofiaPro" size="13.19" />

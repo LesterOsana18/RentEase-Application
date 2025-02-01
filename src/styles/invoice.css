@@ -95,3 +95,20 @@
     -fx-background-color: #CE5D3D; 
 }
 
+.combobox-style {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #FE724C;  
+    -fx-border-width: 2px; 
+    -fx-border-radius: 5px;
+    -fx-background-insets: 0, 0, 0, 0; 
+    -fx-font-family: "Sofia Pro";
+    -fx-font-size: 14px;
+    -fx-text-fill: #2B3674;
+}
+
+
+.combobox-style{
+	-fx-prompt-text-fill: #2B3674;
+}
+
+    
