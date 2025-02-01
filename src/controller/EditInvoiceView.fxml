@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox prefHeight="80.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CreateInvoiceController">
+<HBox prefHeight="80.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Edit_InvoiceController">
    <children>
       <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: FFF1EE;">
          <children>
@@ -148,7 +148,7 @@
             </Text>
             <Pane layoutX="228.0" layoutY="119.0" prefHeight="616.0" prefWidth="943.0" style="-fx-background-color: White; -fx-background-radius: 13.89;">
                <children>
-                  <Text fill="#2b3674" layoutX="31.47" layoutY="52.08" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATE INVOICE">
+                  <Text fill="#2b3674" layoutX="31.47" layoutY="52.08" strokeType="OUTSIDE" strokeWidth="0.0" text="EDIT INVOICE">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="32.64" />
                      </font>
