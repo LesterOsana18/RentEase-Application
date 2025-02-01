@@ -52,7 +52,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Text>
-                  <Text fx:id="create_invoice_btn" fill="#2b3674" layoutX="47.92" layoutY="237.75" onMouseClicked="#create_invoice_btn" strokeType="OUTSIDE" strokeWidth="0.0" text="Create Invoice">
+                  <Text fx:id="create_invoice_btn" fill="#a3aed0" layoutX="47.92" layoutY="237.75" onMouseClicked="#create_invoice_btn" strokeType="OUTSIDE" strokeWidth="0.0" text="Create Invoice">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
@@ -88,7 +88,7 @@
                   </ImageView>
                   <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="224.83" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../imgs/CreateInvoiceIcon%20(Orange).png" />
+                        <Image url="@../imgs/CreateInvoiceIcon.png" />
                      </image>
                   </ImageView>
                   <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="294.83" pickOnBounds="true" preserveRatio="true">
@@ -108,7 +108,7 @@
                   </ImageView>
                   <ImageView fitHeight="16.67" fitWidth="16.67" layoutX="22.92" layoutY="259.83" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../imgs/EditInvoice.png" />
+                        <Image url="@../imgs/EditInvoice%20(Orange).png" />
                      </image>
                   </ImageView>
                   <Button fx:id="logout_btn" layoutX="33.0" layoutY="697.92" mnemonicParsing="false" onMouseClicked="#logout_btn_clicked" prefHeight="30.0" prefWidth="128.0" style="-fx-background-radius: 16.67;" stylesheets="@../styles/dashboard.css" text="Logout" textFill="WHITE" wrapText="true">
@@ -121,7 +121,7 @@
                      </styleClass>
                   </Button>
                   <Line endX="38.499969482421875" endY="19.199996948242188" layoutX="162.0" layoutY="226.0" startX="38.499969482421875" startY="-3.4000015258789062" stroke="#fe724c" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="3.0" />
-                  <Text fx:id="edit_invoice_btn" fill="#a3aed0" layoutX="47.92" layoutY="272.75" onMouseClicked="#edit_invoice_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Invoice">
+                  <Text fx:id="edit_invoice_btn" fill="#2b3674" layoutX="47.92" layoutY="272.75" onMouseClicked="#edit_invoice_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Invoice">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
@@ -237,7 +237,7 @@
                         <Font name="SofiaPro" size="20.64" />
                      </font>
                   </Text>
-                  <Button fx:id="logout_btn1" layoutX="813.0" layoutY="549.0" mnemonicParsing="false" onMouseClicked="#logout_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67; -fx-background-color: CC0C0C;" stylesheets="@../styles/invoice.css" text="Delete" textFill="WHITE" wrapText="true">
+                  <Button fx:id="delete_btn" layoutX="813.0" layoutY="549.0" mnemonicParsing="false" onAction="#delete_btn_clicked" onMouseClicked="#logout_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67; -fx-background-color: CC0C0C;" stylesheets="@../styles/invoice.css" text="Delete" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
@@ -245,7 +245,7 @@
                   <DatePicker fx:id="date_picker" layoutX="684.03" layoutY="79.86" prefHeight="40.28" prefWidth="228.47" promptText="DATE" stylesheets="@../styles/invoice.css" />
                   <ComboBox fx:id="property_cmb_box" layoutX="28.47" layoutY="79.86" prefHeight="40.28" prefWidth="374.31" promptText="PROPERTY" styleClass="combobox-style" stylesheets="@../styles/invoice.css" />
                   <ComboBox fx:id="unit_cmb_box" layoutX="429.0" layoutY="80.0" prefHeight="40.28" prefWidth="228.47" promptText="PROPERTY" styleClass="combobox-style" stylesheets="@../styles/invoice.css" />
-                  <Button fx:id="logout_btn11" layoutX="685.0" layoutY="549.0" mnemonicParsing="false" onMouseClicked="#logout_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67;" stylesheets="@../styles/invoice.css" text="Edit" textFill="WHITE" wrapText="true">
+                  <Button fx:id="edit_btn" layoutX="685.0" layoutY="549.0" mnemonicParsing="false" onAction="#edit_btn_clicked" onMouseClicked="#logout_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67;" stylesheets="@../styles/invoice.css" text="Edit" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
