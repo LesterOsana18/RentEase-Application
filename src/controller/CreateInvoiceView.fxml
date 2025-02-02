@@ -224,14 +224,14 @@
                         <Font name="SofiaPro" size="13.19" />
                      </font>
                   </Text>
-                  <CheckBox fx:id="status_pending_chk_box" layoutX="501.0" layoutY="379.0" mnemonicParsing="false" onAction="#status_pending_chk_box_clicked" stylesheets="@../styles/invoice.css" />
-                  <Text fill="#2b3674" layoutX="535.0" layoutY="395.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PENDING PAYMENT">
+                  <CheckBox fx:id="status_pending_chk_box" layoutX="501.0" layoutY="378.0" mnemonicParsing="false" onAction="#status_pending_chk_box_clicked" stylesheets="@../styles/invoice.css" />
+                  <Text fill="#2b3674" layoutX="535.0" layoutY="394.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PENDING PAYMENT">
                      <font>
                         <Font name="SofiaPro" size="13.19" />
                      </font>
                   </Text>
-                  <CheckBox fx:id="status_overdue_chk_box" layoutX="706.0" layoutY="379.0" mnemonicParsing="false" onAction="#status_overdue_chk_box_clicked" stylesheets="@../styles/invoice.css" />
-                  <Text fill="#2b3674" layoutX="740.0" layoutY="395.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OVERDUE PAYMENT">
+                  <CheckBox fx:id="status_overdue_chk_box" layoutX="706.0" layoutY="378.0" mnemonicParsing="false" onAction="#status_overdue_chk_box_clicked" stylesheets="@../styles/invoice.css" />
+                  <Text fill="#2b3674" layoutX="740.0" layoutY="394.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OVERDUE PAYMENT">
                      <font>
                         <Font name="SofiaPro" size="13.19" />
                      </font>
