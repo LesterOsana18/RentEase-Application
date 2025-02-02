@@ -199,5 +199,9 @@ public class BalanceDueController {
     void payment_history_year_cmb_box_clicked(ActionEvent event) {
 
     }
+    
+    void balance_due() {
+    	
+    }
 
 }
