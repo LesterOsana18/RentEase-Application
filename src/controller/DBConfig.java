@@ -22,10 +22,10 @@ public class DBConfig {
     private static String PASSWORD = "";
     
     static {
-        int user = 2; // Set the user value here
+        int user = 1; // Set the user value here
 
         if (user == 1) {
-            PASSWORD = "LesterOsana.18";
+            PASSWORD = "lesterosana";
         } else if (user == 2) {
             PASSWORD = "1123";
         }

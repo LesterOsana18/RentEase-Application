@@ -1,0 +1,107 @@
+.text-field {
+    -fx-border-color: #FE724C;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px; 
+    -fx-background-radius: 4px;  
+    -fx-prompt-text-fill: #2B3674;
+    -fx-font-family: "Sofia Pro";
+    -fx-font-size: 14px;
+    -fx-text-fill: #2B3674;
+}
+
+.check-box {
+    -fx-font-family: "Sofia Pro";
+    -fx-font-size: 14px;
+    -fx-text-fill: #2B3674;
+}
+
+.check-box .box {
+    -fx-pref-width: 23px;
+    -fx-pref-height: 23px;
+    -fx-border-color: #FE724C;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-background-color: transparent;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #FE724C;
+    -fx-border-color: #FE724C;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #2B3674;
+}
+
+.check-box .text {
+    -fx-padding: 0 0 0 8px; 
+}
+
+.date-picker {
+    -fx-font-family: "Sofia Pro";
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #2B3674;
+    -fx-text-fill: #2B3674;
+    -fx-background-color: transparent;
+    -fx-border-color: #FE724C;  
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent; 
+    -fx-prompt-text-fill: #2B3674;
+    -fx-text-fill: #2B3674;
+    -fx-background-insets: 0;       
+    -fx-background-radius: 0;      
+    -fx-padding: 0;               
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent;
+}
+
+
+.date-picker .arrow {
+    -fx-background-color: #2B3674 !important;
+}
+
+.btn-button {
+    -fx-font-family: "Sofia Pro";
+    -fx-font-size: 15px;
+    -fx-background-color: #FE724C;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-opacity: 1;  
+    -fx-transition: all 0.2s ease-in-out; 
+}
+
+.btn-button:pressed {
+    -fx-background-color: #CE5D3D; 
+}
+
+.combobox-style {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #FE724C;  
+    -fx-border-width: 2px; 
+    -fx-border-radius: 5px;
+    -fx-background-insets: 0, 0, 0, 0; 
+    -fx-font-family: "Sofia Pro";
+    -fx-font-size: 14px;
+    -fx-text-fill: #2B3674;
+}
+
+
+.combobox-style{
+	-fx-prompt-text-fill: #2B3674;
+}
+
+    
