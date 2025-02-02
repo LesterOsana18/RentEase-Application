@@ -209,13 +209,13 @@
                         <Font name="SofiaPro-SemiBold" size="13.89" />
                      </font>
                   </Text>
-                  <ComboBox fx:id="payment_history_month_cmb_box" layoutX="156.0" layoutY="17.0" onAction="#payment_history_month_cmb_box_clicked" prefHeight="25.0" prefWidth="55.0" promptText="Month" style="-fx-background-radius: 16.67; -fx-background-color: F4F7FE;" styleClass="date_cmbBox" stylesheets="@../styles/invoice.css" />
-                  <Button fx:id="payment_history_filter_btn" layoutX="276.0" layoutY="17.0" mnemonicParsing="false" onAction="#payment_history_filter_btn_clicked" prefHeight="26.0" prefWidth="55.0" style="-fx-background-radius: 16.67; -fx-background-color: F4F7FE; -fx-text-fill: FE724C;" stylesheets="@../styles/invoice.css" text="Filter" textFill="WHITE" wrapText="true">
+                  <ComboBox fx:id="balance_due_month_cmb_box" layoutX="156.0" layoutY="17.0" onAction="#balance_due_month_cmb_box_clicked" prefHeight="25.0" prefWidth="55.0" promptText="Month" style="-fx-background-radius: 16.67; -fx-background-color: F4F7FE;" styleClass="date_cmbBox" stylesheets="@../styles/invoice.css" />
+                  <Button fx:id="balance_due_filter_btn" layoutX="276.0" layoutY="17.0" mnemonicParsing="false" onAction="#balance_due_filter_btn_clicked" prefHeight="26.0" prefWidth="55.0" style="-fx-background-radius: 16.67; -fx-background-color: F4F7FE; -fx-text-fill: FE724C;" stylesheets="@../styles/invoice.css" text="Filter" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="9.0" />
                      </font>
                   </Button>
-                  <ComboBox fx:id="payment_history_year_cmb_box" layoutX="217.0" layoutY="17.0" onAction="#payment_history_year_cmb_box_clicked" prefHeight="25.0" prefWidth="55.0" promptText="Year" style="-fx-background-radius: 16.67; -fx-background-color: F4F7FE;" styleClass="date_cmbBox" stylesheets="@../styles/invoice.css" />
+                  <ComboBox fx:id="balance_due_year_cmb_box" layoutX="217.0" layoutY="17.0" onAction="#balance_due_year_cmb_box_clicked" prefHeight="25.0" prefWidth="55.0" promptText="Year" style="-fx-background-radius: 16.67; -fx-background-color: F4F7FE;" styleClass="date_cmbBox" stylesheets="@../styles/invoice.css" />
                   <TableView fx:id="balance_due_table_view" layoutY="57.0" prefHeight="461.0" prefWidth="945.83" style="-fx-background-color: #F4F7FE;" styleClass="column-header" stylesheets="@../styles/invoice.css">
                      <columns>
                         <TableColumn id="property_column" fx:id="property" prefWidth="110.0" text="Properties" />
@@ -224,7 +224,7 @@
                         <TableColumn fx:id="bill_type" text="Bill Type" />
                         <TableColumn fx:id="amount" prefWidth="60.0" text="Amount" />
                         <TableColumn fx:id="deposit" prefWidth="75.0" text="Deposit" />
-                        <TableColumn fx:id="advance" prefWidth="75.0" text="Advance Payment" />
+                        <TableColumn fx:id="advance" prefWidth="75.0" text="Advance" />
                         <TableColumn fx:id="status" prefWidth="75.0" text="Status" />
                         <TableColumn fx:id="receipt" text="Get Receipt" />
                      </columns>

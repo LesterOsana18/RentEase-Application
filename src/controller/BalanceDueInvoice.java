@@ -6,12 +6,12 @@ public class BalanceDueInvoice {
     private String date;
     private String billType;
     private double amount;
-    private double deposit;
-    private double advance; // Ensure this matches the database column name 'advanced'
+    private int deposit; // Changed to int
+    private int advance; // Changed to int
     private String status;
 
     public BalanceDueInvoice(String property, String unit, String date, String billType,
-                              double amount, double deposit, double advance,
+                              double amount, int deposit, int advance,
                               String status) {
         this.property = property;
         this.unit = unit;
@@ -59,17 +59,17 @@ public class BalanceDueInvoice {
         this.amount = amount; 
     }
 
-    public double getDeposit() { 
+    public int getDeposit() { 
         return deposit; 
     }
-    public void setDeposit(double deposit) { 
+    public void setDeposit(int deposit) { 
         this.deposit = deposit; 
     }
 
-    public double getAdvance() { 
+    public int getAdvance() { 
         return advance; 
     }
-    public void setAdvance(double advance) { 
+    public void setAdvance(int advance) { 
         this.advance = advance; 
     }
 
