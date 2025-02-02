@@ -89,6 +89,9 @@ public class Edit_InvoiceController {
 
     @FXML
     private CheckBox status_pending_chk_box;
+    
+    @FXML
+    private TextField total_amount_text_field;
 
     @FXML
     private ComboBox<?> unit_cmb_box;
