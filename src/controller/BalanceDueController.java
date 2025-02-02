@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -14,12 +15,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class BalanceDueController implements Initializable {
 
@@ -84,7 +87,7 @@ public class BalanceDueController implements Initializable {
     private TableColumn<BalanceDueInvoice, Double> deposit;
 
     @FXML
-    private TableColumn<BalanceDueInvoice, String> receipt;
+    private TableColumn<BalanceDueInvoice, Void> receipt;
 
     @FXML
     private TableColumn<BalanceDueInvoice, String> property;
@@ -94,28 +97,68 @@ public class BalanceDueController implements Initializable {
 
     @FXML
     private TableColumn<BalanceDueInvoice, String> unit;
-    
-    
-    ObservableList<BalanceDueInvoice> initialData(){
-    	
-    	BalanceDueInvoice inv1 = new BalanceDueInvoice("Sunset Apartments", "A101", "2025-02-03", "Electricity", 150.75, 50.50, 5.50, "Paid", "test");
-    	return FXCollections.observableArrayList(inv1);
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Initialize any necessary data here
-    	property.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, String>("property"));
-    	unit.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, String>("unit"));
-    	date.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, String>("date"));
-    	bill_type.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, String>("billType"));
-    	amount.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, Double>("amount"));
-    	deposit.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, Double>("deposit"));
-    	advance.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, Double>("advance"));
-    	status.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, String>("status"));
-    	receipt.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, String>("receipt"));
-    	
-    	balance_due_table_view.setItems(initialData());
+        property.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, String>("property"));
+        unit.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, String>("unit"));
+        date.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, String>("date"));
+        bill_type.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, String>("billType"));
+        amount.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, Double>("amount"));
+        deposit.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, Double>("deposit"));
+        advance.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, Double>("advance")); // Ensure this matches the BalanceDueInvoice field
+        status.setCellValueFactory(new PropertyValueFactory<BalanceDueInvoice, String>("status"));
+
+        addReceiptButtonToTable();
+
+        balance_due_table_view.setItems(fetchBalanceDueData());
+    }
+
+    private ObservableList<BalanceDueInvoice> fetchBalanceDueData() {
+        List<BalanceDueInvoice> invoices = DBConfig.getBalanceDueInvoices();
+        return FXCollections.observableArrayList(invoices);
+    }
+
+    private void addReceiptButtonToTable() {
+        Callback<TableColumn<BalanceDueInvoice, Void>, TableCell<BalanceDueInvoice, Void>> cellFactory = new Callback<TableColumn<BalanceDueInvoice, Void>, TableCell<BalanceDueInvoice, Void>>() {
+            @Override
+            public TableCell<BalanceDueInvoice, Void> call(final TableColumn<BalanceDueInvoice, Void> param) {
+                final TableCell<BalanceDueInvoice, Void> cell = new TableCell<BalanceDueInvoice, Void>() {
+                    private final Button btn = new Button("Print Receipt");
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            BalanceDueInvoice invoice = getTableView().getItems().get(getIndex());
+                            printReceipt(invoice);
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        receipt.setCellFactory(cellFactory);
+    }
+
+    private void printReceipt(BalanceDueInvoice invoice) {
+        System.out.println("Receipt for Property: " + invoice.getProperty());
+        System.out.println("Unit: " + invoice.getUnit());
+        System.out.println("Date: " + invoice.getDate());
+        System.out.println("Bill Type: " + invoice.getBillType());
+        System.out.println("Amount: " + invoice.getAmount());
+        System.out.println("Deposit: " + invoice.getDeposit());
+        System.out.println("Advance: " + invoice.getAdvance());
+        System.out.println("Status: " + invoice.getStatus());
     }
 
     @FXML

@@ -7,13 +7,12 @@ public class BalanceDueInvoice {
     private String billType;
     private double amount;
     private double deposit;
-    private double advance;
+    private double advance; // Ensure this matches the database column name 'advanced'
     private String status;
-    private String receipt;
 
     public BalanceDueInvoice(String property, String unit, String date, String billType,
                               double amount, double deposit, double advance,
-                              String status, String receipt) {
+                              String status) {
         this.property = property;
         this.unit = unit;
         this.date = date;
@@ -22,71 +21,62 @@ public class BalanceDueInvoice {
         this.deposit = deposit;
         this.advance = advance;
         this.status = status;
-        this.receipt = receipt;
     }
 
     // Getters and setters
     public String getProperty() { 
-    	return property; 
+        return property; 
     }
     public void setProperty(String property) { 
-    	this.property = property; 
+        this.property = property; 
     }
 
     public String getUnit() { 
-    	return unit; 
+        return unit; 
     }
     public void setUnit(String unit) { 
-    	this.unit = unit; 
+        this.unit = unit; 
     }
 
     public String getDate() { 
-    	return date; 
+        return date; 
     }
     public void setDate(String date) { 
-    	this.date = date; 
+        this.date = date; 
     }
 
     public String getBillType() { 
-    	return billType; 
+        return billType; 
     }
     public void setBillType(String billType) { 
-    	this.billType = billType; 
+        this.billType = billType; 
     }
 
     public double getAmount() { 
-    	return amount; 
+        return amount; 
     }
     public void setAmount(double amount) { 
-    	this.amount = amount; 
+        this.amount = amount; 
     }
 
     public double getDeposit() { 
-    	return deposit; 
-    	}
+        return deposit; 
+    }
     public void setDeposit(double deposit) { 
-    	this.deposit = deposit; 
+        this.deposit = deposit; 
     }
 
     public double getAdvance() { 
-    	return advance; 
+        return advance; 
     }
     public void setAdvance(double advance) { 
-    	this.advance = advance; 
+        this.advance = advance; 
     }
 
     public String getStatus() { 
-    	return status; 
+        return status; 
     }
     public void setStatus(String status) { 
-    	this.status = status; 
+        this.status = status; 
     }
-    
-    public String getReceipt() {
-    	return receipt;
-    }
-    public void setReciept(String receipt) {
-    	this.receipt = receipt;
-    }
-    
 }
