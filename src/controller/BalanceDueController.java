@@ -1,5 +1,7 @@
 package controller;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -21,6 +23,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -125,12 +128,12 @@ public class BalanceDueController implements Initializable {
             @Override
             public TableCell<BalanceDueInvoice, Void> call(final TableColumn<BalanceDueInvoice, Void> param) {
                 final TableCell<BalanceDueInvoice, Void> cell = new TableCell<BalanceDueInvoice, Void>() {
-                    private final Button btn = new Button("Print Receipt");
+                    private final Button btn = new Button("Save Receipt");
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             BalanceDueInvoice invoice = getTableView().getItems().get(getIndex());
-                            printReceipt(invoice);
+                            saveReceiptToFile(invoice);
                         });
                     }
 
@@ -150,15 +153,26 @@ public class BalanceDueController implements Initializable {
         receipt.setCellFactory(cellFactory);
     }
 
-    private void printReceipt(BalanceDueInvoice invoice) {
-        System.out.println("Receipt for Property: " + invoice.getProperty());
-        System.out.println("Unit: " + invoice.getUnit());
-        System.out.println("Date: " + invoice.getDate());
-        System.out.println("Bill Type: " + invoice.getBillType());
-        System.out.println("Amount: " + invoice.getAmount());
-        System.out.println("Deposit: " + invoice.getDeposit());
-        System.out.println("Advance: " + invoice.getAdvance());
-        System.out.println("Status: " + invoice.getStatus());
+    private void saveReceiptToFile(BalanceDueInvoice invoice) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Receipt");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        File file = fileChooser.showSaveDialog(balance_due_table_view.getScene().getWindow());
+
+        if (file != null) {
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write("Receipt for Property: " + invoice.getProperty() + "\n");
+                writer.write("Unit: " + invoice.getUnit() + "\n");
+                writer.write("Date: " + invoice.getDate() + "\n");
+                writer.write("Bill Type: " + invoice.getBillType() + "\n");
+                writer.write("Amount: " + invoice.getAmount() + "\n");
+                writer.write("Deposit: " + invoice.getDeposit() + "\n");
+                writer.write("Advance: " + invoice.getAdvance() + "\n");
+                writer.write("Status: " + invoice.getStatus() + "\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
