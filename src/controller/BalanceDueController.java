@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -80,21 +81,29 @@ public class BalanceDueController implements Initializable {
     private Text total_units_text;
 
     @FXML
-    private TableColumn<BalanceDueInvoice, Integer> advance; // Changed to Integer
+    private TableColumn<BalanceDueInvoice, Double> advance;
+
     @FXML
     private TableColumn<BalanceDueInvoice, Double> amount;
+
     @FXML
     private TableColumn<BalanceDueInvoice, String> bill_type;
+
     @FXML
     private TableColumn<BalanceDueInvoice, String> date;
+
     @FXML
-    private TableColumn<BalanceDueInvoice, Integer> deposit; // Changed to Integer
+    private TableColumn<BalanceDueInvoice, Double> deposit;
+
     @FXML
     private TableColumn<BalanceDueInvoice, Void> receipt;
+
     @FXML
     private TableColumn<BalanceDueInvoice, String> property;
+
     @FXML
     private TableColumn<BalanceDueInvoice, String> status;
+
     @FXML
     private TableColumn<BalanceDueInvoice, String> unit;
 
@@ -128,30 +137,34 @@ public class BalanceDueController implements Initializable {
 
         addReceiptButtonToTable();
 
-        allInvoices = fetchBalanceDueData();
-        balance_due_table_view.setItems(allInvoices);
+        // Use Platform.runLater to initialize data after the scene is set
+        Platform.runLater(() -> {
+            Stage stage = (Stage) balance_due_table_view.getScene().getWindow();
+            allInvoices = fetchBalanceDueData(stage);
+            balance_due_table_view.setItems(allInvoices);
 
-        // Set total properties and units text
-        int totalProperties = DBConfig.getTotalDistinctProperties();
-        int totalUnits = DBConfig.getTotalDistinctUnits();
-        total_properties_text.setText(String.valueOf(totalProperties));
-        total_units_text.setText(String.valueOf(totalUnits));
+            // Set total properties and units text
+            int totalProperties = DBConfig.getTotalDistinctProperties(stage);
+            int totalUnits = DBConfig.getTotalDistinctUnits(stage);
+            total_properties_text.setText(String.valueOf(totalProperties));
+            total_units_text.setText(String.valueOf(totalUnits));
 
-        // Set total revenue text
-        double totalRevenue = DBConfig.getTotalRevenue();
-        total_revenue_text.setText(String.format("%.2f", totalRevenue));
+            // Set total revenue text
+            double totalRevenue = DBConfig.getTotalRevenue(stage);
+            total_revenue_text.setText(String.format("%.2f", totalRevenue));
+        });
     }
 
-    private ObservableList<BalanceDueInvoice> fetchBalanceDueData() {
-        List<BalanceDueInvoice> invoices = DBConfig.getBalanceDueInvoices();
+    private ObservableList<BalanceDueInvoice> fetchBalanceDueData(Stage stage) {
+        List<BalanceDueInvoice> invoices = DBConfig.getBalanceDueInvoices(stage);
         return FXCollections.observableArrayList(invoices);
     }
 
     private void addReceiptButtonToTable() {
-        Callback<TableColumn<BalanceDueInvoice, Void>, TableCell<BalanceDueInvoice, Void>> cellFactory = new Callback<>() {
+        Callback<TableColumn<BalanceDueInvoice, Void>, TableCell<BalanceDueInvoice, Void>> cellFactory = new Callback<TableColumn<BalanceDueInvoice, Void>, TableCell<BalanceDueInvoice, Void>>() {
             @Override
             public TableCell<BalanceDueInvoice, Void> call(final TableColumn<BalanceDueInvoice, Void> param) {
-                final TableCell<BalanceDueInvoice, Void> cell = new TableCell<>() {
+                final TableCell<BalanceDueInvoice, Void> cell = new TableCell<BalanceDueInvoice, Void>() {
                     private final Button btn = new Button("Save Receipt");
 
                     {
@@ -280,7 +293,8 @@ public class BalanceDueController implements Initializable {
             return;
         }
 
-        List<BalanceDueInvoice> filteredInvoices = DBConfig.getFilteredBalanceDueInvoices(selectedMonth, selectedYear);
+        Stage stage = (Stage) balance_due_table_view.getScene().getWindow();
+        List<BalanceDueInvoice> filteredInvoices = DBConfig.getFilteredBalanceDueInvoices(stage, selectedMonth, selectedYear);
         balance_due_table_view.setItems(FXCollections.observableArrayList(filteredInvoices));
         balance_due_filter_btn.setText("Remove Filter");
     }
