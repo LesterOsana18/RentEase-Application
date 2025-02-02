@@ -1,11 +1,14 @@
 package controller;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -133,7 +136,7 @@ public class BalanceDueController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             BalanceDueInvoice invoice = getTableView().getItems().get(getIndex());
-                            saveReceiptToFile(invoice);
+                            saveReceiptToPdf(invoice);
                         });
                     }
 
@@ -153,25 +156,52 @@ public class BalanceDueController implements Initializable {
         receipt.setCellFactory(cellFactory);
     }
 
-    private void saveReceiptToFile(BalanceDueInvoice invoice) {
+    private void saveReceiptToPdf(BalanceDueInvoice invoice) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Receipt");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
         File file = fileChooser.showSaveDialog(balance_due_table_view.getScene().getWindow());
 
         if (file != null) {
-            try (FileWriter writer = new FileWriter(file)) {
-                writer.write("Receipt for Property: " + invoice.getProperty() + "\n");
-                writer.write("Unit: " + invoice.getUnit() + "\n");
-                writer.write("Date: " + invoice.getDate() + "\n");
-                writer.write("Bill Type: " + invoice.getBillType() + "\n");
-                writer.write("Amount: " + invoice.getAmount() + "\n");
-                writer.write("Deposit: " + invoice.getDeposit() + "\n");
-                writer.write("Advance: " + invoice.getAdvance() + "\n");
-                writer.write("Status: " + invoice.getStatus() + "\n");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            new Thread(() -> {
+                try (PDDocument document = new PDDocument()) {
+                    PDPage page = new PDPage();
+                    document.addPage(page);
+
+                    try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+                        // Adding content to the PDF
+                        contentStream.beginText();
+                        contentStream.newLineAtOffset(100, 700);
+                        contentStream.showText("Receipt for Property: " + invoice.getProperty());
+                        contentStream.endText();
+
+                        contentStream.beginText();
+                        contentStream.newLineAtOffset(100, 650);
+                        contentStream.showText("Unit: " + invoice.getUnit());
+                        contentStream.newLineAtOffset(0, -15);
+                        contentStream.showText("Date: " + invoice.getDate());
+                        contentStream.newLineAtOffset(0, -15);
+                        contentStream.showText("Bill Type: " + invoice.getBillType());
+                        contentStream.newLineAtOffset(0, -15);
+                        contentStream.showText("Amount: " + invoice.getAmount());
+                        contentStream.newLineAtOffset(0, -15);
+                        contentStream.showText("Deposit: " + invoice.getDeposit());
+                        contentStream.newLineAtOffset(0, -15);
+                        contentStream.showText("Advance: " + invoice.getAdvance());
+                        contentStream.newLineAtOffset(0, -15);
+                        contentStream.showText("Status: " + invoice.getStatus());
+                        contentStream.endText();
+                    }
+
+                    document.save(file);
+                    System.out.println("PDF document created and closed successfully.");
+                } catch (IOException e) {
+                    System.err.println("Error creating PDF: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }).start();
+        } else {
+            System.err.println("File chooser returned null, PDF not created.");
         }
     }
 
