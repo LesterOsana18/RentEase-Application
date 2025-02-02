@@ -104,4 +104,65 @@
 	-fx-prompt-text-fill: #2B3674;
 }
 
+.receipt-button {
+    -fx-font-family: "Sofia Pro"; 
+    -fx-font-weight: Bold; 
+    -fx-text-fill: white;  
+    -fx-cursor: hand; 
+    -fx-background-color: #FE724C;
+    -fx-background-radius: 50px;
+}
     
+    
+.logout_btn{
+	-fx-font-family: "Sofia Pro"; 
+	-fx-font-weight: Bold; 
+	-fx-text-fill: white;  
+	-fx-cursor: hand; 
+	-fx-background-color: #FE724C; 
+}
+
+.logout_btn:pressed {
+    -fx-background-color: #CE5D3D; 
+}
+
+.seeAll_Btn{
+	-fx-font-family: "Sofia Pro"; 
+	-fx-font-size: 9.5; 
+	-fx-font-weight: Bold; 
+	-fx-text-fill: white;  
+	-fx-cursor: hand; 
+}
+
+.date_cmbBox{
+	-fx-font-family: "Sofia Pro"; 
+	-fx-font-weight: Bold; 
+	-fx-prompt-text-fill: #FE724C;
+	-fx-font-size: 8.5; 
+}
+
+.table-view .column-header {
+	-fx-border-color: white;        /* Default border color */
+	-fx-border-width: 15px;         /* Thin border */
+	-fx-border-style: solid;
+}
+
+
+/* Style for the column header */
+.table-view .column-header .label {
+    -fx-font-family: "Sofia Pro";
+    -fx-background-color: White; /* Background color for header */
+    -fx-text-fill: #707eae;      /* Text color for header */
+    -fx-font-size: 11.5px;
+    -fx-font-weight: Bold;     /* Remove bold */
+}
+
+/* Align column cells to the center and add the border */
+.table-view .table-cell {
+    -fx-alignment: CENTER;       /* Align text to center */
+    -fx-font-family: "Sofia Pro"; /* Same font family */
+    -fx-text-fill: #707eae;      /* Text color */
+    -fx-font-size: 11.5px;       /* Font size */
+    -fx-font-weight: NORMAL;     /* Remove bold */
+}
+

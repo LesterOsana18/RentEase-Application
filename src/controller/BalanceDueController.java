@@ -133,8 +133,10 @@ public class BalanceDueController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             BalanceDueInvoice invoice = getTableView().getItems().get(getIndex());
-                            saveReceiptToFile(invoice);
+                            saveReceiptToTextFile(invoice);
                         });
+                        // Apply the CSS class to the button
+                        btn.getStyleClass().add("receipt-button");
                     }
 
                     @Override
@@ -153,25 +155,31 @@ public class BalanceDueController implements Initializable {
         receipt.setCellFactory(cellFactory);
     }
 
-    private void saveReceiptToFile(BalanceDueInvoice invoice) {
+    private void saveReceiptToTextFile(BalanceDueInvoice invoice) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Receipt");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
         File file = fileChooser.showSaveDialog(balance_due_table_view.getScene().getWindow());
 
         if (file != null) {
-            try (FileWriter writer = new FileWriter(file)) {
-                writer.write("Receipt for Property: " + invoice.getProperty() + "\n");
-                writer.write("Unit: " + invoice.getUnit() + "\n");
-                writer.write("Date: " + invoice.getDate() + "\n");
-                writer.write("Bill Type: " + invoice.getBillType() + "\n");
-                writer.write("Amount: " + invoice.getAmount() + "\n");
-                writer.write("Deposit: " + invoice.getDeposit() + "\n");
-                writer.write("Advance: " + invoice.getAdvance() + "\n");
-                writer.write("Status: " + invoice.getStatus() + "\n");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            new Thread(() -> {
+                try (FileWriter writer = new FileWriter(file)) {
+                    writer.write("Receipt for Property: " + invoice.getProperty() + "\n");
+                    writer.write("Unit: " + invoice.getUnit() + "\n");
+                    writer.write("Date: " + invoice.getDate() + "\n");
+                    writer.write("Bill Type: " + invoice.getBillType() + "\n");
+                    writer.write("Amount: " + invoice.getAmount() + "\n");
+                    writer.write("Deposit: " + invoice.getDeposit() + "\n");
+                    writer.write("Advance: " + invoice.getAdvance() + "\n");
+                    writer.write("Status: " + invoice.getStatus() + "\n");
+                    System.out.println("Text file created and saved successfully.");
+                } catch (IOException e) {
+                    System.err.println("Error creating text file: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }).start();
+        } else {
+            System.err.println("File chooser returned null, text file not created.");
         }
     }
 
