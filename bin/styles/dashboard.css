@@ -32,15 +32,20 @@
 }
 
 
+/* Style for the column header */
 .table-view .column-header .label {
-	-fx-font-family: "Sofia Pro"; 
+    -fx-font-family: "Sofia Pro";
     -fx-background-color: White; /* Background color for header */
-    -fx-text-fill: white;          /* Text color for header */
-    -fx-font-weight: bold;         
-    -fx-font-size: 11.5px;           
-	-fx-text-fill: #707eae;
+    -fx-text-fill: #707eae;      /* Text color for header */
+    -fx-font-size: 11.5px;
+    -fx-font-weight: Bold;     /* Remove bold */
 }
 
-.table-view .column-header.property_column{
-	-fx-alignment: LEFT;
+/* Align column cells to the center and add the border */
+.table-view .table-cell {
+    -fx-alignment: CENTER;       /* Align text to center */
+    -fx-font-family: "Sofia Pro"; /* Same font family */
+    -fx-text-fill: #707eae;      /* Text color */
+    -fx-font-size: 11.5px;       /* Font size */
+    -fx-font-weight: NORMAL;     /* Remove bold */
 }
