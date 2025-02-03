@@ -24,7 +24,7 @@ public class DBConfig {
     private static String PASSWORD = "";
 
     static {
-        int user = 1; // Set the user value here
+        int user = 2; // Set the user value here
 
         if (user == 1) {
             PASSWORD = "lesterosana";
