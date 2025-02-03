@@ -219,22 +219,22 @@ public class PaymentHistoryController implements Initializable {
 
     @FXML
     void create_invoice_btn(MouseEvent event) {
-        loadScene(event, "/controller/CreateInvoiceView.fxml");
+        loadScene(event, "/controller/CreateInvoiceView.fxml", "RentEase: Create Invoice");
     }
 
     @FXML
     void dashboard_btn_clicked(MouseEvent event) {
-        loadScene(event, "/controller/DashboardView.fxml");
+        loadScene(event, "/controller/DashboardView.fxml", "RentEase: Dashboard");
     }
 
     @FXML
     void edit_invoice_btn_clicked(MouseEvent event) {
-        loadScene(event, "/controller/EditInvoiceView.fxml");
+        loadScene(event, "/controller/EditInvoiceView.fxml", "RentEase: Edit Invoice");
     }
 
     @FXML
     void help_btn_clicked(MouseEvent event) {
-        loadScene(event, "/controller/HelpsFAQsView.fxml");
+        loadScene(event, "/controller/HelpsFAQsView.fxml", "RentEase: Help & FAQs");
     }
 
     @FXML
@@ -244,12 +244,12 @@ public class PaymentHistoryController implements Initializable {
 
     @FXML
     void my_profile_btn_clicked(MouseEvent event) {
-        loadScene(event, "/controller/MyProfileView.fxml");
+        loadScene(event, "/controller/MyProfileView.fxml", "RentEase: My Profile");
     }
 
     @FXML
     void balance_due_btn_clicked(MouseEvent event) {
-        loadScene(event, "/controller/BalanceDueView.fxml");
+        loadScene(event, "/controller/BalanceDueView.fxml", "RentEase: Balance Due");
     }
 
     @FXML
@@ -305,13 +305,14 @@ public class PaymentHistoryController implements Initializable {
         }
     }
 
-    private void loadScene(MouseEvent event, String fxmlPath) {
+    private void loadScene(MouseEvent event, String fxmlPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
+            stage.setTitle(title);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {

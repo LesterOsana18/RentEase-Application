@@ -701,8 +701,8 @@ public class Edit_InvoiceController implements Initializable {
             Parent root = loader.load();
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
-            stage.setScene(scene);
             stage.setTitle(title);
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

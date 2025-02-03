@@ -24,7 +24,7 @@ public class DBConfig {
     private static String PASSWORD = "";
 
     static {
-        int user = 2; // Set the user value here
+        int user = 1; // Set the user value here
 
         if (user == 1) {
             PASSWORD = "lesterosana";
@@ -83,7 +83,7 @@ public class DBConfig {
                 psInsert.setString(1, username);
                 psInsert.executeUpdate();
 
-                changeScene(event, "/controller/LoginView.fxml", "Dashboard", null);
+                changeScene(event, "/controller/LoginView.fxml", "RentEase: Dashboard", null);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -143,7 +143,7 @@ public class DBConfig {
                     if (retrievedUsername.equals(username)) {
                         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                         stage.setUserData(userId); // Store user ID in the stage
-                        changeScene(event, "/controller/DashboardView.fxml", "Dashboard", null);
+                        changeScene(event, "/controller/DashboardView.fxml", "RentEase: Dashboard", null);
                     }
                 }
             }
