@@ -180,6 +180,7 @@ public class CreateInvoiceController implements Initializable  {
             // Set the new scene
             Scene scene = new Scene(BalanceDueRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Balance Due");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -199,6 +200,7 @@ public class CreateInvoiceController implements Initializable  {
             // Set the new scene
             Scene scene = new Scene(CreateInvoiceRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Create Invoice");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -218,6 +220,7 @@ public class CreateInvoiceController implements Initializable  {
             // Set the new scene
             Scene scene = new Scene(DashboardRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Dashboard");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -237,6 +240,7 @@ public class CreateInvoiceController implements Initializable  {
             // Set the new scene
             Scene scene = new Scene(EditInvoiceRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Edit Invoice");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -256,6 +260,7 @@ public class CreateInvoiceController implements Initializable  {
             // Set the new scene
             Scene scene = new Scene(HelpsFAQsRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Help & FAQs");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -264,21 +269,7 @@ public class CreateInvoiceController implements Initializable  {
     
     @FXML
     void logout_btn_clicked(MouseEvent event) {
-    	try {
-            // Load the Login FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/LoginView.fxml"));
-            Parent LoginRoot = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(LoginRoot);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    	
     }
     
     @FXML
@@ -304,6 +295,7 @@ public class CreateInvoiceController implements Initializable  {
             // Set the new scene
             Scene scene = new Scene(MyProfileRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: My Profile");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -323,6 +315,7 @@ public class CreateInvoiceController implements Initializable  {
             // Set the new scene
             Scene scene = new Scene(PaymentHistoryRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Payment History");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

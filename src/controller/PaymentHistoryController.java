@@ -74,6 +74,7 @@ public class PaymentHistoryController {
             // Set the new scene
             Scene scene = new Scene(paymentHistoryRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Balance Due");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,6 +94,7 @@ public class PaymentHistoryController {
             // Set the new scene
             Scene scene = new Scene(Create_InvoiceRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Create Invoice");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -112,6 +114,7 @@ public class PaymentHistoryController {
             // Set the new scene
             Scene scene = new Scene(DashboardRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Dashboard");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -131,6 +134,7 @@ public class PaymentHistoryController {
             // Set the new scene
             Scene scene = new Scene(Edit_InvoiceRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Edit Invoice");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -150,6 +154,7 @@ public class PaymentHistoryController {
             // Set the new scene
             Scene scene = new Scene(Helps_FaqsRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Help & FAQs");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -174,6 +179,7 @@ public class PaymentHistoryController {
             // Set the new scene
             Scene scene = new Scene(MyProfileRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: My Profile");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -182,7 +188,22 @@ public class PaymentHistoryController {
 
     @FXML
     void payment_history_btn_clicked(MouseEvent event) {
+    	try {
+            // Load the Payment History FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/PaymentHistoryView.fxml"));
+            Parent PaymentHistoryRoot = loader.load();
 
+            // Get the current stage (window) from the event source
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+
+            // Set the new scene
+            Scene scene = new Scene(PaymentHistoryRoot);
+            stage.setScene(scene);
+            stage.setTitle("RentEase: Payment History");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

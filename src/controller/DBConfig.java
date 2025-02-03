@@ -138,7 +138,7 @@ public class DBConfig {
 					String retrievedUsername = resultSet.getString("username");
 					
 					if (retrievedUsername.equals(username)) {
-						changeScene(event, "/controller/DashboardView.fxml", "Dashboard", null);
+						changeScene(event, "/controller/DashboardView.fxml", "RentEase: Dashboard", null);
 					} 
 					}
 				} 

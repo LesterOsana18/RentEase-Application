@@ -89,6 +89,7 @@ public class DashboardController {
             // Set the new scene
             Scene scene = new Scene(paymentHistoryRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Balance Due");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -123,6 +124,7 @@ public class DashboardController {
             // Set the new scene
             Scene scene = new Scene(Create_InvoiceRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Create Invoice");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -147,6 +149,7 @@ public class DashboardController {
             // Set the new scene
             Scene scene = new Scene(Edit_InvoiceRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Edit Invoice");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -166,6 +169,7 @@ public class DashboardController {
             // Set the new scene
             Scene scene = new Scene(Helps_FaqsRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Help & FAQs Invoice");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -190,6 +194,7 @@ public class DashboardController {
             // Set the new scene
             Scene scene = new Scene(MyProfileRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: My Profile");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -209,6 +214,7 @@ public class DashboardController {
             // Set the new scene
             Scene scene = new Scene(paymentHistoryRoot);
             stage.setScene(scene);
+            stage.setTitle("RentEase: Payment History");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
