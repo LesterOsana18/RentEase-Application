@@ -56,7 +56,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Text>
-                  <Text fx:id="help_btn" fill="#2b3674" layoutX="47.92" layoutY="307.75" onMouseClicked="#help_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Helps &amp; FAQs">
+                  <Text fx:id="help_btn" fill="#2b3674" layoutX="47.92" layoutY="307.75" onMouseClicked="#help_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Helps and FAQs">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
@@ -151,7 +151,7 @@
                   </Text>
                   <Text fill="#2b3674" layoutX="31.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. What is RentEase?">
                      <font>
-                        <Font name="SofiaPro-SemiBold" size="19.64" />
+                        <Font name="SofiaPro-Bold" size="19.64" />
                      </font>
                   </Text>
                   <Text fill="#2b3674" layoutX="32.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="RentEase is a rental and utility management application designed to simplify the process of tracking rent payments, utility bills, and tenant information. It aims to support landlords in managing their real estate businesses more effectively by providing essential tools for better organization and efficiency." textAlignment="JUSTIFY" wrappingWidth="880.14208984375">
@@ -161,7 +161,7 @@
                   </Text>
                   <Text fill="#2b3674" layoutX="31.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. How do I create an account on RentEase?">
                      <font>
-                        <Font name="SofiaPro-SemiBold" size="19.64" />
+                        <Font name="SofiaPro-Bold" size="19.64" />
                      </font>
                   </Text>
                   <Text fill="#2b3674" layoutX="32.0" layoutY="263.0" strokeType="OUTSIDE" strokeWidth="0.0" text="RentEase simplifies the sign-up process by only asking for a username since all data is stored locally on your device for enhanced privacy and convenience." textAlignment="JUSTIFY" wrappingWidth="880.14208984375">
@@ -171,7 +171,7 @@
                   </Text>
                   <Text fill="#2b3674" layoutX="32.0" layoutY="336.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. Is RentEase free to use?">
                      <font>
-                        <Font name="SofiaPro-SemiBold" size="19.64" />
+                        <Font name="SofiaPro-Bold" size="19.64" />
                      </font>
                   </Text>
                   <Text fill="#2b3674" layoutX="32.0" layoutY="365.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Yes, RentEase offers a free basic version with essential features. " textAlignment="JUSTIFY" wrappingWidth="880.14208984375">
@@ -181,7 +181,7 @@
                   </Text>
                   <Text fill="#2b3674" layoutX="32.0" layoutY="426.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4. What should I do if I encounter a technical issue?">
                      <font>
-                        <Font name="SofiaPro-SemiBold" size="19.64" />
+                        <Font name="SofiaPro-Bold" size="19.64" />
                      </font>
                   </Text>
                   <Text fill="#2b3674" layoutX="32.0" layoutY="455.0" strokeType="OUTSIDE" strokeWidth="0.0" text="If you face any technical issues, please contact our support team through the 'Help' section within the app or email us directly at support@rentease.com." textAlignment="JUSTIFY" wrappingWidth="880.14208984375">
