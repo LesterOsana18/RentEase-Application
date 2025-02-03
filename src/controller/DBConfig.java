@@ -22,13 +22,17 @@ public class DBConfig {
     private static String PASSWORD = "";
     
     static {
-        int user = 2; // Set the user value here
+        int user = 1; // Set the user value here
 
         if (user == 1) {
             PASSWORD = "lesterosana";
         } else if (user == 2) {
             PASSWORD = "1123";
         }
+    }
+    
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 	
 	public static void changeScene(ActionEvent event, String fxmlFile, String title, String username) {
