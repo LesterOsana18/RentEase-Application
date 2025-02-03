@@ -153,22 +153,22 @@
                         <Font name="SofiaPro-SemiBold" size="32.64" />
                      </font>
                   </Text>
-                  <TextField fx:id="rent_bill_text_field" disable="true" layoutX="28.47" layoutY="226.0" prefHeight="40.28" prefWidth="202.12" promptText="RENT BILL" stylesheets="@../styles/invoice.css">
+                  <TextField fx:id="rent_bill_text_field" disable="true" layoutX="28.47" layoutY="226.0" onKeyTyped="#rent_bill_text_field_listener" prefHeight="40.28" prefWidth="202.12" promptText="RENT BILL" stylesheets="@../styles/invoice.css">
                      <font>
                         <Font name="SofiaPro" size="13.19" />
                      </font>
                   </TextField>
-                  <TextField fx:id="electricity_text_field" disable="true" layoutX="255.78" layoutY="226.0" prefHeight="40.28" prefWidth="202.12" promptText="ELECTRICITY BILL" stylesheets="@../styles/invoice.css">
+                  <TextField fx:id="electricity_text_field" disable="true" layoutX="255.78" layoutY="226.0" onKeyTyped="#electricity_text_field_listener" prefHeight="40.28" prefWidth="202.12" promptText="ELECTRICITY BILL" stylesheets="@../styles/invoice.css">
                      <font>
                         <Font name="SofiaPro" size="13.19" />
                      </font>
                   </TextField>
-                  <TextField fx:id="water_text_field" disable="true" layoutX="483.08" layoutY="226.0" prefHeight="40.28" prefWidth="202.12" promptText="WATER BILL" stylesheets="@../styles/invoice.css">
+                  <TextField fx:id="water_text_field" disable="true" layoutX="483.08" layoutY="226.0" onKeyTyped="#water_text_field_listener" prefHeight="40.28" prefWidth="202.12" promptText="WATER BILL" stylesheets="@../styles/invoice.css">
                      <font>
                         <Font name="SofiaPro" size="13.19" />
                      </font>
                   </TextField>
-                  <TextField fx:id="wifi_text_field" disable="true" layoutX="710.38" layoutY="226.0" prefHeight="40.28" prefWidth="202.12" promptText="WI-FI BILL" stylesheets="@../styles/invoice.css">
+                  <TextField fx:id="wifi_text_field" disable="true" layoutX="710.38" layoutY="226.0" onKeyTyped="#wifi_text_field_listener" prefHeight="40.28" prefWidth="202.12" promptText="WI-FI BILL" stylesheets="@../styles/invoice.css">
                      <font>
                         <Font name="SofiaPro" size="13.19" />
                      </font>
