@@ -14,12 +14,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
 
 public class DBConfig {
-    
-    private static final String URL = "jdbc:mysql://localhost:3306/rentease_application";
+	
+	private static final String URL = "jdbc:mysql://localhost:3306/rentease_application";
     private static final String USER = "root";
     private static String PASSWORD = "";
     
@@ -36,200 +34,138 @@ public class DBConfig {
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
-
-    public static void changeScene(ActionEvent event, String fxmlFile, String title, String username) {
-        Parent root = null;
-
-        if (username != null) {
-            try {
-                FXMLLoader loader = new FXMLLoader(DBConfig.class.getResource(fxmlFile));
-                root = loader.load();
-                // Dashboard dashboard = loader.getController();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                root = FXMLLoader.load(DBConfig.class.getResource(fxmlFile));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setTitle(title);
-        stage.setScene(new Scene(root, 1200, 780));
-        stage.show();
-    }
-    
-    public static void signUpUser(ActionEvent event, String username) {
-        Connection connection = null;
-        PreparedStatement psInsert = null;
-        PreparedStatement psCheckUserExists = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            psCheckUserExists = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
-            psCheckUserExists.setString(1, username);
-            resultSet = psCheckUserExists.executeQuery();
-
-            if (resultSet.isBeforeFirst()) {
-                System.out.println("User already exists!");
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("You cannot use this username.");
-                alert.show();
-            } else {
-                psInsert = connection.prepareStatement("INSERT INTO users (username) VALUES (?)");
-                psInsert.setString(1, username);
-                psInsert.executeUpdate();
-
-                changeScene(event, "/controller/LoginView.fxml", "Dashboard", null);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (psCheckUserExists != null) {
-                try {
-                    psCheckUserExists.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (psInsert != null) {
-                try {
-                    psInsert.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public static void logInUser(ActionEvent event, String username) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            preparedStatement = connection.prepareStatement("SELECT username FROM users WHERE username = ?");
-            preparedStatement.setString(1, username);
-            resultSet = preparedStatement.executeQuery();
-
-            if (!resultSet.isBeforeFirst()) {
-                System.out.println("User not found.");
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Provided credentials are incorrect!");
-                alert.show();
-            } else {
-                while (resultSet.next()) {
-                    String retrievedUsername = resultSet.getString("username");
-
-                    if (retrievedUsername.equals(username)) {
-                        changeScene(event, "/controller/DashboardView.fxml", "RentEase: Dashboard", null);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    // Add the methods to fetch properties, units, and bill types from the database
-
-    public static ObservableList<String> getProperties() {
-        ObservableList<String> properties = FXCollections.observableArrayList();
-        String query = "SELECT DISTINCT property FROM payment_history UNION SELECT DISTINCT property FROM balance_due";
-
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                properties.add(resultSet.getString("property"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return properties;
-    }
-
-    public static ObservableList<String> getUnits() {
-        ObservableList<String> units = FXCollections.observableArrayList();
-        String query = "SELECT DISTINCT unit FROM payment_history UNION SELECT DISTINCT unit FROM balance_due";
-
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                units.add(resultSet.getString("unit"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return units;
-    }
-    
-    public static ResultSet getInvoiceData(String property, String unit, String billType, String date) {
-        ResultSet resultSet = null;
-        String query = "SELECT * FROM payment_history WHERE property = ? AND unit = ? AND bill_type = ? AND date = ? " +
-                       "UNION SELECT * FROM balance_due WHERE property = ? AND unit = ? AND bill_type = ? AND date = ?";
-
-        try {
-            Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, property);
-            statement.setString(2, unit);
-            statement.setString(3, billType);
-            statement.setString(4, date);
-            statement.setString(5, property);
-            statement.setString(6, unit);
-            statement.setString(7, billType);
-            statement.setString(8, date);
-            resultSet = statement.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return resultSet;
-    }
+	
+	public static void changeScene(ActionEvent event, String fxmlFile, String title, String username) {
+		Parent root = null;
+		
+		if (username != null) {
+			try {
+				FXMLLoader loader = new FXMLLoader(DBConfig.class.getResource(fxmlFile));
+				root = loader.load();
+				// Dashboard dashboard = loader.getController();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				root = FXMLLoader.load(DBConfig.class.getResource(fxmlFile));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		stage.setTitle(title);
+		stage.setScene(new Scene(root, 1200, 780));
+		stage.show();
+	}
+	
+	public static void signUpUser(ActionEvent event, String username) {
+		Connection connection = null;
+		PreparedStatement psInsert = null;
+		PreparedStatement psCheckUserExists = null;
+		ResultSet resultSet = null;
+		
+		try {
+			connection = DriverManager.getConnection(URL, USER, PASSWORD);
+			psCheckUserExists = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
+			psCheckUserExists.setString(1, username);
+			resultSet = psCheckUserExists.executeQuery();
+			
+			if (resultSet.isBeforeFirst()) {
+				System.out.println("User already exists!");
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setContentText("You cannot use this username.");
+				alert.show();
+			} else {
+				psInsert = connection.prepareStatement("INSERT INTO users (username) VALUES (?)");
+				psInsert.setString(1, username);
+				psInsert.executeUpdate();
+				
+				changeScene(event, "/controller/LoginView.fxml", "Dashboard", null);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (psCheckUserExists != null) {
+				try {
+					psCheckUserExists.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (psInsert != null) {
+				try {
+					psInsert.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public static void logInUser(ActionEvent event, String username) {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			connection = DriverManager.getConnection(URL, USER, PASSWORD);
+			preparedStatement = connection.prepareStatement("SELECT username FROM users WHERE username = ?");
+			preparedStatement.setString(1, username);
+			resultSet = preparedStatement.executeQuery();
+			
+			if (!resultSet.isBeforeFirst()) {
+				System.out.println("User not found.");
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setContentText("Provided credentials are incorrect!");
+				alert.show();
+			} else {
+				while (resultSet.next()) {
+					String retrievedUsername = resultSet.getString("username");
+					
+					if (retrievedUsername.equals(username)) {
+						changeScene(event, "/controller/DashboardView.fxml", "RentEase: Dashboard", null);
+					} 
+					}
+				} 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	} 
 }

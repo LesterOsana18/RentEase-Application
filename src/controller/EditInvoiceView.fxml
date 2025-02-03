@@ -250,17 +250,12 @@
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
                   </Button>
-                  <TextField fx:id="paid_amount" disable="true" layoutX="288.0" layoutY="421.0" prefHeight="40.0" prefWidth="171.0" promptText="PAID AMOUNT" stylesheets="@../styles/invoice.css">
+                  <TextField fx:id="total_amount_text_field" disable="true" layoutX="288.0" layoutY="421.0" prefHeight="40.0" prefWidth="171.0" promptText="TOTAL AMOUNT" stylesheets="@../styles/invoice.css">
                      <font>
                         <Font name="SofiaPro" size="13.19" />
                      </font>
                   </TextField>
-                  <ComboBox fx:id="bill_type_cmb_box" layoutX="163.0" layoutY="154.0" onAction="#bill_type_cmb_box_selected" prefHeight="40.0" prefWidth="459.0" promptText="BILL TYPE" styleClass="combobox-style" stylesheets="@../styles/invoice.css" />
-                  <Button fx:id="find_btn" layoutX="644.0" layoutY="154.0" mnemonicParsing="false" onAction="#find_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67;" styleClass="btn-button" stylesheets="@../styles/invoice.css" text="Find" textFill="WHITE" wrapText="true">
-                     <font>
-                        <Font name="SofiaPro-SemiBold" size="11.11" />
-                     </font>
-                  </Button>
+                  <ComboBox fx:id="bill_type_cmb_box" layoutX="218.0" layoutY="151.0" onAction="#bill_type_cmb_box_selected" prefHeight="40.0" prefWidth="459.0" promptText="BILL TYPE" styleClass="combobox-style" stylesheets="@../styles/invoice.css" />
                </children>
             </Pane>
          </children>

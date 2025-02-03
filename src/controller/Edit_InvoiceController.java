@@ -1,9 +1,19 @@
 package controller;
 
+import java.io.IOException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
+
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -16,229 +26,217 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+public class Edit_InvoiceController implements Initializable {
 
-public class Edit_InvoiceController {
+    // FXML components
+    @FXML private Text balance_due_btn, create_invoice_btn, dashboard_btn, edit_invoice_btn, help_btn, my_profile_btn, payment_history_btn;
+    @FXML private ComboBox<String> bill_type_cmb_box, property_cmb_box, unit_cmb_box;
+    @FXML private DatePicker date_picker;
+    @FXML private Button delete_btn, edit_btn, logout_btn;
+    @FXML private TextField electricity_text_field, monthly_advance_text, monthly_deposit_text, note_text, rent_bill_text_field, total_amount_text_field, water_text_field, wifi_text_field;
+    @FXML private CheckBox monthly_advance_chk_box, monthly_deposit_chk_box, repeat_monthly_chk_box, status_overdue_chk_box, status_paid_chk_box, status_partially_chk_box, status_pending_chk_box;
 
-    @FXML
-    private Text balance_due_btn;
+    // Constants
+    private static final String PAYMENT_HISTORY_QUERY = "SELECT DISTINCT property FROM payment_history UNION SELECT DISTINCT property FROM balance_due";
+    private static final String UNITS_QUERY = "SELECT DISTINCT unit FROM payment_history WHERE property = ? UNION SELECT DISTINCT unit FROM balance_due WHERE property = ?";
+    private static final String PROPERTY_DETAILS_QUERY = "SELECT * FROM payment_history WHERE property = ?";
+    private static final String UNIT_DETAILS_QUERY = "SELECT * FROM payment_history WHERE property = ? AND unit = ? UNION SELECT * FROM balance_due WHERE property = ? AND unit = ?";
+    private static final String DELETE_QUERY = "DELETE FROM payment_history WHERE property = ? AND unit = ? AND bill_type = ?";
+    private static final String UPDATE_QUERY_TEMPLATE = "UPDATE %s SET date = ?, amount = ?, deposit = ?, advanced = ?, status = ?, note = ? WHERE property = ? AND unit = ? AND bill_type = ?";
+    private static final String PAYMENT_HISTORY_TABLE = "payment_history";
+    private static final String BALANCE_DUE_TABLE = "balance_due";
 
-    @FXML
-    private ComboBox<String> bill_type_cmb_box;
-
-    @FXML
-    private Text create_invoice_btn;
-
-    @FXML
-    private Text dashboard_btn;
-
-    @FXML
-    private DatePicker date_picker;
-
-    @FXML
-    private Button delete_btn;
-
-    @FXML
-    private Button edit_btn;
-
-    @FXML
-    private Text edit_invoice_btn;
-
-    @FXML
-    private TextField electricity_text_field;
-
-    @FXML
-    private Button find_btn;
-
-    @FXML
-    private Text help_btn;
-
-    @FXML
-    private Button logout_btn;
-
-    @FXML
-    private CheckBox monthly_advance_chk_box;
-
-    @FXML
-    private TextField monthly_advance_text;
-
-    @FXML
-    private CheckBox monthly_deposit_chk_box;
-
-    @FXML
-    private TextField monthly_deposit_text;
-
-    @FXML
-    private Text my_profile_btn;
-
-    @FXML
-    private TextField note_text;
-
-    @FXML
-    private TextField paid_amount;
-
-    @FXML
-    private Text payment_history_btn;
-
-    @FXML
-    private ComboBox<String> property_cmb_box;
-
-    @FXML
-    private TextField rent_bill_text_field;
-
-    @FXML
-    private CheckBox repeat_monthly_chk_box;
-
-    @FXML
-    private CheckBox status_overdue_chk_box;
-
-    @FXML
-    private CheckBox status_paid_chk_box;
-
-    @FXML
-    private CheckBox status_partially_chk_box;
-
-    @FXML
-    private CheckBox status_pending_chk_box;
-
-    @FXML
-    private ComboBox<String> unit_cmb_box;
-
-    @FXML
-    private TextField water_text_field;
-
-    @FXML
-    private TextField wifi_text_field;
-
-    @FXML
-    public void initialize() {
-        // Initialize the bill_type_cmb_box with predefined values
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // Initialize combo boxes and disable fields
         bill_type_cmb_box.setItems(FXCollections.observableArrayList("Rent", "Electricity", "Water", "Wi-Fi"));
+        disableAllBillTypeFields();
+        disableMiscellaneousAndStatus();
 
-        // Load data for property_cmb_box and unit_cmb_box from the database
-        property_cmb_box.setItems(DBConfig.getProperties());
-        unit_cmb_box.setItems(DBConfig.getUnits());
+        // Set up event handlers
+        setupEventHandlers();
     }
 
-    @FXML
-    void balance_due_btn_clicked(MouseEvent event) {
-    	loadScene(event, "/controller/BalanceDueView.fxml", "RentEase: Balance Due");
+    private void setupEventHandlers() {
+        // Checkbox event handlers
+        monthly_deposit_chk_box.setOnAction(e -> monthly_deposit_text.setDisable(!monthly_deposit_chk_box.isSelected()));
+        monthly_advance_chk_box.setOnAction(e -> monthly_advance_text.setDisable(!monthly_advance_chk_box.isSelected()));
+
+        // Status checkbox event handlers
+        status_paid_chk_box.setOnAction(e -> handleStatusCheckboxSelection(status_paid_chk_box));
+        status_partially_chk_box.setOnAction(e -> handleStatusCheckboxSelection(status_partially_chk_box));
+        status_pending_chk_box.setOnAction(e -> handleStatusCheckboxSelection(status_pending_chk_box));
+        status_overdue_chk_box.setOnAction(e -> handleStatusCheckboxSelection(status_overdue_chk_box));
+
+        // ComboBox event handlers
+        property_cmb_box.setOnMouseClicked(e -> loadProperties());
+        unit_cmb_box.setOnMouseClicked(e -> loadUnits());
+        property_cmb_box.setOnAction(e -> loadPropertyDetails());
+        unit_cmb_box.setOnAction(e -> loadUnitDetails());
+        bill_type_cmb_box.setOnAction(e -> enableBillTypeField());
     }
 
-    @FXML
-    void bill_type_cmb_box_selected(ActionEvent event) {
-        // Handle bill type combo box selection
-    }
+    private void handleStatusCheckboxSelection(CheckBox selectedCheckBox) {
+        // Deselect other status checkboxes
+        if (selectedCheckBox.isSelected()) {
+            if (selectedCheckBox != status_paid_chk_box) status_paid_chk_box.setSelected(false);
+            if (selectedCheckBox != status_partially_chk_box) status_partially_chk_box.setSelected(false);
+            if (selectedCheckBox != status_pending_chk_box) status_pending_chk_box.setSelected(false);
+            if (selectedCheckBox != status_overdue_chk_box) status_overdue_chk_box.setSelected(false);
 
-    @FXML
-    void create_invoice_btn(MouseEvent event) {
-    	loadScene(event, "/controller/CreateInvoiceView.fxml", "RentEase: Create Invoice");
-    }
-
-    @FXML
-    void dashboard_btn_clicked(MouseEvent event) {
-    	loadScene(event, "/controller/DashboardView.fxml", "RentEase: Dashboard");
-    }
-
-    @FXML
-    void delete_btn_clicked(ActionEvent event) {
-        // Handle delete button click
-    }
-
-    @FXML
-    void edit_btn_clicked(ActionEvent event) {
-        // Handle edit button click
-    }
-
-    @FXML
-    void edit_invoice_btn_clicked(MouseEvent event) {
-    	 loadScene(event, "/controller/EditInvoiceView.fxml", "RentEase: Edit Invoice");
-    }
-
-    @FXML
-    void find_btn_clicked(ActionEvent event) {
-        String property = property_cmb_box.getValue();
-        String unit = unit_cmb_box.getValue();
-        String billType = bill_type_cmb_box.getValue();
-        String date = (date_picker.getValue() != null) ? date_picker.getValue().toString() : null;
-
-        if (property == null || unit == null || billType == null || date == null) {
-            showAlert("Error", "Please select a property, unit, bill type, and date to find.");
-            return;
+            // Enable/disable total amount text field based on status
+            total_amount_text_field.setDisable(selectedCheckBox != status_partially_chk_box);
         }
+    }
 
-        ResultSet resultSet = DBConfig.getInvoiceData(property, unit, billType, date);
+    private String getSelectedStatus() {
+        if (status_paid_chk_box.isSelected()) return "Paid";
+        if (status_partially_chk_box.isSelected()) return "Partially Paid";
+        if (status_pending_chk_box.isSelected()) return "Pending Payment";
+        if (status_overdue_chk_box.isSelected()) return "Overdue Payment";
+        return null;
+    }
 
-        try {
-            if (resultSet != null && resultSet.next()) {
-                enableFields(billType);
+    private double parseDoubleOrZero(String text) {
+        try { return Double.parseDouble(text); } catch (NumberFormatException e) { return 0; }
+    }
 
-                String amount = resultSet.getString("amount");
-                switch (billType) {
-                    case "Rent":
-                        rent_bill_text_field.setText(amount);
-                        break;
-                    case "Electricity":
-                        electricity_text_field.setText(amount);
-                        break;
-                    case "Water":
-                        water_text_field.setText(amount);
-                        break;
-                    case "Wi-Fi":
-                        wifi_text_field.setText(amount);
-                        break;
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void loadProperties() {
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(PAYMENT_HISTORY_QUERY);
+             ResultSet resultSet = statement.executeQuery()) {
+            ObservableList<String> properties = FXCollections.observableArrayList();
+            while (resultSet.next()) {
+                properties.add(resultSet.getString("property"));
+            }
+            property_cmb_box.setItems(properties);
+        } catch (SQLException e) {
+            handleDatabaseError("Unable to load properties", e);
+        }
+    }
+
+    private void loadUnits() {
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(UNITS_QUERY)) {
+            statement.setString(1, property_cmb_box.getValue());
+            statement.setString(2, property_cmb_box.getValue());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                ObservableList<String> units = FXCollections.observableArrayList();
+                while (resultSet.next()) {
+                    units.add(resultSet.getString("unit"));
                 }
-
-                int deposit = resultSet.getInt("deposit");
-                if (deposit > 0) {
-                    monthly_deposit_chk_box.setSelected(true);
-                    monthly_deposit_text.setText(String.valueOf(deposit));
-                    monthly_deposit_text.setDisable(deposit == 1 ? false : true);
-                } else {
-                    monthly_deposit_chk_box.setSelected(false);
-                    monthly_deposit_text.clear();
-                    monthly_deposit_text.setDisable(true);
-                }
-
-                int advance = resultSet.getInt("advanced");
-                if (advance > 0) {
-                    monthly_advance_chk_box.setSelected(true);
-                    monthly_advance_text.setText(String.valueOf(advance));
-                    monthly_advance_text.setDisable(advance == 1 ? false : true);
-                } else {
-                    monthly_advance_chk_box.setSelected(false);
-                    monthly_advance_text.clear();
-                    monthly_advance_text.setDisable(true);
-                }
-
-                note_text.setText(resultSet.getString("note"));
-
-                // Retrieve and set the status
-                String status = resultSet.getString("status");
-                status_paid_chk_box.setSelected("Paid".equals(status));
-                status_partially_chk_box.setSelected("Partially Paid".equals(status));
-                status_pending_chk_box.setSelected("Pending".equals(status));
-                status_overdue_chk_box.setSelected("Overdue".equals(status));
-            } else {
-                showAlert("Error", "No record found matching the selected inputs.");
+                unit_cmb_box.setItems(units);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("Error", "Database error: " + e.getMessage());
+            handleDatabaseError("Unable to load units", e);
         }
     }
 
-    private void enableFields(String billType) {
-        // Disable all fields first
-        rent_bill_text_field.setDisable(true);
-        electricity_text_field.setDisable(true);
-        water_text_field.setDisable(true);
-        wifi_text_field.setDisable(true);
+    private void loadPropertyDetails() {
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(PROPERTY_DETAILS_QUERY)) {
+            statement.setString(1, property_cmb_box.getValue());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    populatePropertyDetails(resultSet);
+                }
+            }
+        } catch (SQLException e) {
+            handleDatabaseError("Unable to load property details", e);
+        }
+    }
 
-        // Enable only the field corresponding to the selected bill type
+    private void populatePropertyDetails(ResultSet resultSet) throws SQLException {
+        unit_cmb_box.setValue(resultSet.getString("unit"));
+        date_picker.setValue(resultSet.getDate("date").toLocalDate());
+        monthly_deposit_text.setText(String.valueOf(resultSet.getInt("deposit")));
+        monthly_advance_text.setText(String.valueOf(resultSet.getInt("advanced")));
+        note_text.setText(resultSet.getString("note"));
+
+        String status = resultSet.getString("status");
+        switch (status) {
+            case "Paid":
+                status_paid_chk_box.setSelected(true);
+                break;
+            case "Partially Paid":
+                status_partially_chk_box.setSelected(true);
+                total_amount_text_field.setText(String.valueOf(resultSet.getDouble("amount")));
+                total_amount_text_field.setDisable(false);
+                break;
+            case "Pending Payment":
+                status_pending_chk_box.setSelected(true);
+                break;
+            case "Overdue Payment":
+                status_overdue_chk_box.setSelected(true);
+                break;
+        }
+
+        enableMiscellaneousAndStatus();
+    }
+
+    private void loadUnitDetails() {
+        enableMiscellaneousAndStatus();
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(UNIT_DETAILS_QUERY)) {
+            statement.setString(1, property_cmb_box.getValue());
+            statement.setString(2, unit_cmb_box.getValue());
+            statement.setString(3, property_cmb_box.getValue());
+            statement.setString(4, unit_cmb_box.getValue());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    populateUnitDetails(resultSet);
+                }
+            }
+        } catch (SQLException e) {
+            handleDatabaseError("Unable to load unit details", e);
+        }
+    }
+
+    private void populateUnitDetails(ResultSet resultSet) throws SQLException {
+        String billType = resultSet.getString("bill_type");
+        double amount = resultSet.getDouble("amount");
         switch (billType) {
+            case "Rent":
+                rent_bill_text_field.setText(String.valueOf(amount));
+                break;
+            case "Electricity":
+                electricity_text_field.setText(String.valueOf(amount));
+                break;
+            case "Water":
+                water_text_field.setText(String.valueOf(amount));
+                break;
+            case "Wi-Fi":
+                wifi_text_field.setText(String.valueOf(amount));
+                break;
+        }
+    }
+
+    private String getBillTypeAmount(String billType) {
+        switch (billType) {
+            case "Rent":
+                return rent_bill_text_field.getText();
+            case "Electricity":
+                return electricity_text_field.getText();
+            case "Water":
+                return water_text_field.getText();
+            case "Wi-Fi":
+                return wifi_text_field.getText();
+            default:
+                return "0";
+        }
+    }
+
+    private void enableBillTypeField() {
+        disableAllBillTypeFields();
+        String selectedBillType = bill_type_cmb_box.getValue();
+        switch (selectedBillType) {
             case "Rent":
                 rent_bill_text_field.setDisable(false);
                 break;
@@ -252,95 +250,251 @@ public class Edit_InvoiceController {
                 wifi_text_field.setDisable(false);
                 break;
         }
+    }
 
+    private void disableAllBillTypeFields() {
+        rent_bill_text_field.setDisable(true);
+        electricity_text_field.setDisable(true);
+        water_text_field.setDisable(true);
+        wifi_text_field.setDisable(true);
+    }
+
+    private void clearFields() {
+        property_cmb_box.getSelectionModel().clearSelection();
+        unit_cmb_box.getSelectionModel().clearSelection();
+        bill_type_cmb_box.getSelectionModel().clearSelection();
+        date_picker.setValue(null);
+        rent_bill_text_field.clear();
+        electricity_text_field.clear();
+        water_text_field.clear();
+        wifi_text_field.clear();
+        monthly_deposit_text.clear();
+        monthly_advance_text.clear();
+        note_text.clear();
+        status_paid_chk_box.setSelected(false);
+        status_partially_chk_box.setSelected(false);
+        status_pending_chk_box.setSelected(false);
+        status_overdue_chk_box.setSelected(false);
+        total_amount_text_field.clear();
+    }
+
+    private void disableMiscellaneousAndStatus() {
+        monthly_deposit_text.setDisable(true);
+        monthly_advance_text.setDisable(true);
+        note_text.setDisable(true);
+        total_amount_text_field.setDisable(true);
+        status_paid_chk_box.setDisable(true);
+        status_partially_chk_box.setDisable(true);
+        status_pending_chk_box.setDisable(true);
+        status_overdue_chk_box.setDisable(true);
+        monthly_deposit_chk_box.setDisable(true);
+        monthly_advance_chk_box.setDisable(true);
+        repeat_monthly_chk_box.setDisable(true);
+    }
+
+    private void enableMiscellaneousAndStatus() {
+        monthly_deposit_text.setDisable(false);
+        monthly_advance_text.setDisable(false);
+        note_text.setDisable(false);
+        total_amount_text_field.setDisable(false);
+        status_paid_chk_box.setDisable(false);
+        status_partially_chk_box.setDisable(false);
+        status_pending_chk_box.setDisable(false);
+        status_overdue_chk_box.setDisable(false);
         monthly_deposit_chk_box.setDisable(false);
         monthly_advance_chk_box.setDisable(false);
         repeat_monthly_chk_box.setDisable(false);
-        status_paid_chk_box.setDisable(false);
-        status_pending_chk_box.setDisable(false);
-        status_overdue_chk_box.setDisable(false);
-        note_text.setDisable(false);
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
+    @FXML
+    void balance_due_btn_clicked(MouseEvent event) {
+        loadFXMLView("/controller/BalanceDueView.fxml", "RentEase: Balance Due", event);
+    }
+
+    @FXML
+    void bill_type_cmb_box_selected(ActionEvent event) {
+        enableBillTypeField();
+    }
+
+    @FXML
+    void create_invoice_btn(MouseEvent event) {
+        loadFXMLView("/controller/CreateInvoiceView.fxml", "RentEase: Create Invoice", event);
+    }
+
+    @FXML
+    void dashboard_btn_clicked(MouseEvent event) {
+        loadFXMLView("/controller/DashboardView.fxml", "RentEase: Dashboard", event);
+    }
+
+    @FXML
+    void delete_btn_clicked(ActionEvent event) {
+        String property = property_cmb_box.getValue();
+        String unit = unit_cmb_box.getValue();
+        String billType = bill_type_cmb_box.getValue();
+
+        if (property == null || unit == null || billType == null) {
+            showAlert("Error", "Please select a property, unit, and bill type to delete.");
+            return;
+        }
+
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
+
+            statement.setString(1, property);
+            statement.setString(2, unit);
+            statement.setString(3, billType);
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                showAlert("Success", "Record deleted successfully.");
+                clearFields();
+            } else {
+                showAlert("Error", "Record not found or could not be deleted.");
+            }
+        } catch (SQLException e) {
+            handleDatabaseError("Database error: Unable to delete record", e);
+        }
+    }
+
+    @FXML
+    void edit_btn_clicked(ActionEvent event) {
+        String property = property_cmb_box.getValue();
+        String unit = unit_cmb_box.getValue();
+        String billType = bill_type_cmb_box.getValue();
+        String status = getSelectedStatus();
+        String date = (date_picker.getValue() != null) ? date_picker.getValue().toString() : null;
+        double amount = parseDoubleOrZero(getBillTypeAmount(billType));
+        int depositMonths = monthly_deposit_chk_box.isSelected() ? Integer.parseInt(monthly_deposit_text.getText().trim()) : 0;
+        int advanceMonths = monthly_advance_chk_box.isSelected() ? Integer.parseInt(monthly_advance_text.getText().trim()) : 0;
+        String note = note_text.getText().trim();
+
+        if (property == null || unit == null || billType == null || status == null || date == null) {
+            showAlert("Error", "Please fill all required fields and select a status.");
+            return;
+        }
+
+        boolean recordExistsInPaymentHistory = checkRecordExists(PAYMENT_HISTORY_TABLE, property, unit, billType);
+        boolean recordExistsInBalanceDue = checkRecordExists(BALANCE_DUE_TABLE, property, unit, billType);
+
+        if (!recordExistsInPaymentHistory && !recordExistsInBalanceDue) {
+            showAlert("Error", "Record not found.");
+            return;
+        }
+
+        if (recordExistsInPaymentHistory) {
+            updateRecord(PAYMENT_HISTORY_TABLE, date, amount, depositMonths, advanceMonths, status, note, property, unit, billType);
+        }
+
+        if (recordExistsInBalanceDue) {
+            updateRecord(BALANCE_DUE_TABLE, date, amount, depositMonths, advanceMonths, status, note, property, unit, billType);
+        }
+    }
+
+    private boolean checkRecordExists(String tableName, String property, String unit, String billType) {
+        String selectQuery = String.format("SELECT 1 FROM %s WHERE property = ? AND unit = ? AND bill_type = ?", tableName);
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
+            selectStatement.setString(1, property);
+            selectStatement.setString(2, unit);
+            selectStatement.setString(3, billType);
+            try (ResultSet resultSet = selectStatement.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch (SQLException e) {
+            handleDatabaseError("Database error: Unable to check record existence", e);
+            return false;
+        }
+    }
+
+    private void updateRecord(String tableName, String date, double amount, int depositMonths, int advanceMonths, String status, String note, String property, String unit, String billType) {
+        String updateQuery = String.format(UPDATE_QUERY_TEMPLATE, tableName);
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+            updateStatement.setString(1, date);
+            updateStatement.setDouble(2, amount);
+            updateStatement.setInt(3, depositMonths);
+            updateStatement.setInt(4, advanceMonths);
+            updateStatement.setString(5, status);
+            updateStatement.setString(6, note);
+            updateStatement.setString(7, property);
+            updateStatement.setString(8, unit);
+            updateStatement.setString(9, billType);
+
+            int rowsAffected = updateStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                showAlert("Success", String.format("Record updated successfully in %s.", tableName));
+            } else {
+                showAlert("Error", String.format("Record not found or could not be updated in %s.", tableName));
+            }
+        } catch (SQLException e) {
+            handleDatabaseError("Database error: Unable to update record", e);
+        }
+    }
+
+    @FXML
+    void edit_invoice_btn_clicked(MouseEvent event) {
+        loadFXMLView("/controller/EditInvoiceView.fxml", "RentEase: Edit Invoice", event);
     }
 
     @FXML
     void help_btn_clicked(MouseEvent event) {
-    	loadScene(event, "/controller/HelpsFAQsView.fxml", "RentEase: Help & FAQs");
-    }
-
-    @FXML
-    void logout_btn_clicked(MouseEvent event) {
-        // Handle logout button click
-    }
-
-    @FXML
-    void monthly_advance_chk_box_clicked(ActionEvent event) {
-        monthly_advance_text.setDisable(!monthly_advance_chk_box.isSelected());
+        loadFXMLView("/controller/HelpsFAQsView.fxml", "RentEase: Help & FAQs", event);
     }
 
     @FXML
     void monthly_deposit_chk_box_clicked(ActionEvent event) {
+        // Enable or disable the monthly deposit text field based on the checkbox state
         monthly_deposit_text.setDisable(!monthly_deposit_chk_box.isSelected());
     }
 
     @FXML
-    void my_profile_btn_clicked(MouseEvent event) {
-    	loadScene(event, "/controller/MyProfileView.fxml", "RentEase: My Profile");
-    }
-
-    @FXML
-    void payment_history_btn_clicked(MouseEvent event) {
-    	loadScene(event, "/controller/PaymentHistoryView.fxml", "RentEase: Payment History");
-    }
-
-    @FXML
-    void repeat_monthly_chk_box_clicked(ActionEvent event) {
-        // Handle repeat monthly checkbox click
+    void monthly_advance_chk_box_clicked(ActionEvent event) {
+        // Enable or disable the monthly advance text field based on the checkbox state
+        monthly_advance_text.setDisable(!monthly_advance_chk_box.isSelected());
     }
 
     @FXML
     void status_overdue_chk_box_clicked(ActionEvent event) {
-        if (status_overdue_chk_box.isSelected()) {
-            status_paid_chk_box.setSelected(false);
-            status_partially_chk_box.setSelected(false);
-            status_pending_chk_box.setSelected(false);
-        }
+        handleStatusCheckboxSelection(status_overdue_chk_box);
     }
 
     @FXML
     void status_paid_chk_box_clicked(ActionEvent event) {
-        if (status_paid_chk_box.isSelected()) {
-            status_overdue_chk_box.setSelected(false);
-            status_partially_chk_box.setSelected(false);
-            status_pending_chk_box.setSelected(false);
-        }
+        handleStatusCheckboxSelection(status_paid_chk_box);
     }
 
     @FXML
     void status_partially_chk_box_clicked(ActionEvent event) {
-        if (status_partially_chk_box.isSelected()) {
-            status_overdue_chk_box.setSelected(false);
-            status_paid_chk_box.setSelected(false);
-            status_pending_chk_box.setSelected(false);
-        }
+        handleStatusCheckboxSelection(status_partially_chk_box);
     }
 
     @FXML
     void status_pending_chk_box_clicked(ActionEvent event) {
-        if (status_pending_chk_box.isSelected()) {
-            status_overdue_chk_box.setSelected(false);
-            status_paid_chk_box.setSelected(false);
-            status_partially_chk_box.setSelected(false);
-        }
+        handleStatusCheckboxSelection(status_pending_chk_box);
     }
-    
-    private void loadScene(MouseEvent event, String fxmlPath, String title) {
+
+    @FXML
+    void my_profile_btn_clicked(MouseEvent event) {
+        loadFXMLView("/controller/MyProfileView.fxml", "RentEase: My Profile", event);
+    }
+
+    @FXML
+    void payment_history_btn_clicked(MouseEvent event) {
+        loadFXMLView("/controller/PaymentHistoryView.fxml", "RentEase: Payment History", event);
+    }
+
+    @FXML
+    void repeat_monthly_chk_box_clicked(ActionEvent event) {
+        // Implement behavior for repeat_monthly_chk_box if needed
+    }
+
+    @FXML
+    void logout_btn_clicked(MouseEvent event) {
+        loadFXMLView("/controller/LoginView.fxml", "RentEase: Login", event);
+    }
+
+    // Utility method to load FXML views
+    private void loadFXMLView(String fxmlPath, String title, MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
@@ -351,7 +505,13 @@ public class Edit_InvoiceController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert("Error", "Unable to load view: " + e.getMessage());
         }
     }
 
-}
+    // Utility method to handle database errors
+    private void handleDatabaseError(String message, SQLException e) {
+        e.printStackTrace();
+        showAlert("Error", message + ": " + e.getMessage());
+    }
+ }
