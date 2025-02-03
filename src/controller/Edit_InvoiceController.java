@@ -113,7 +113,7 @@ public class Edit_InvoiceController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Populate the ComboBox with items
         bill_type_cmb_box.setItems(FXCollections.observableArrayList(
-            "Rent Bill", "Electricity Bill", "Water Bill", "Wi-Fi Bill"
+            "Rent", "Electricity", "Water", "Wi-Fi"
         ));
     }
 
