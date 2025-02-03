@@ -5,6 +5,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -317,7 +318,34 @@ public class CreateInvoiceController implements Initializable {
 
     @FXML
     void logout_btn_clicked(MouseEvent event) {
+        // Create a confirmation alert
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Logout");
+        alert.setHeaderText("Logout Confirmation");
+        alert.setContentText("Are you sure you want to logout?");
 
+        // Add Yes and No buttons to the alert
+        ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        // Show the alert and wait for the user's response
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.YES) {
+            // If the user clicked Yes, load the Login view
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/LoginView.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("RentEase: Login");
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Error", "Unable to load view: " + e.getMessage());
+            }
+        }
     }
 
     @FXML

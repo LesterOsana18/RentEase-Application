@@ -4,14 +4,18 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -72,7 +76,42 @@ public class HelpsFAQsController {
 
     @FXML
     void logout_btn_clicked(MouseEvent event) {
-        // Implement logout logic here
+        // Create a confirmation alert
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Logout");
+        alert.setHeaderText("Logout Confirmation");
+        alert.setContentText("Are you sure you want to logout?");
+
+        // Add Yes and No buttons to the alert
+        ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        // Show the alert and wait for the user's response
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.YES) {
+            // If the user clicked Yes, load the Login view
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/LoginView.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("RentEase: Login");
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Error", "Unable to load view: " + e.getMessage());
+            }
+        }
+    }
+
+    // Utility method to show alert messages
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
