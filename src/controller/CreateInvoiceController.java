@@ -373,8 +373,10 @@ public class CreateInvoiceController implements Initializable {
 
     @FXML
     void repeat_monthly_chk_box_clicked(ActionEvent event) {
-        // Store the state of repeat_monthly_chk_box
-        isRepeatMonthlyChecked = repeat_monthly_chk_box.isSelected();
+        // Check if the repeat_monthly_chk_box is selected
+        if (repeat_monthly_chk_box.isSelected()) {
+        	showAlert("Repeat Monthly", "You will be notified 5 days prior to the deadline.");
+        }
     }
 
     @FXML

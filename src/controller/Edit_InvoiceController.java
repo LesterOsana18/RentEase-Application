@@ -711,9 +711,19 @@ public class Edit_InvoiceController implements Initializable {
 
     @FXML
     void repeat_monthly_chk_box_clicked(ActionEvent event) {
-        // Implement behavior for repeat_monthly_chk_box if needed
-    }
+        // Check if the repeat_monthly_chk_box is selected
+        if (repeat_monthly_chk_box.isSelected()) {
+            // Create an information alert
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Notification");
+            alert.setHeaderText("Repeat Monthly");
+            alert.setContentText("You will be notified 5 days prior to the deadline.");
 
+            // Show the alert and wait for the user's response
+            alert.showAndWait();
+        }
+    }
+    
     @FXML
     void logout_btn_clicked(MouseEvent event) {
         // Create a confirmation alert

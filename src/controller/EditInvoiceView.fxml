@@ -173,7 +173,7 @@
                         <Font name="SofiaPro" size="13.19" />
                      </font>
                   </TextField>
-                  <Text fill="#2b3674" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Miscellaneous" x="28.47" y="224.08">
+                  <Text fill="#2b3674" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Miscellaneous (Rent Bill Only)" x="28.47" y="224.08">
                      <font>
                         <Font name="SofiaPro" size="20.64" />
                      </font>
@@ -237,7 +237,7 @@
                         <Font name="SofiaPro" size="20.64" />
                      </font>
                   </Text>
-                  <Button fx:id="delete_btn" layoutX="813.0" layoutY="563.0" mnemonicParsing="false" onAction="#delete_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67; -fx-background-color: CC0C0C;" styleClass="btn-button" stylesheets="@../styles/invoice.css" text="DELETE" textFill="WHITE" wrapText="true">
+                  <Button fx:id="delete_btn" layoutX="813.0" layoutY="563.0" mnemonicParsing="false" onAction="#delete_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67;" styleClass="red_btn" stylesheets="@../styles/invoice.css" text="DELETE" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>

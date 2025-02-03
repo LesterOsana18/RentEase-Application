@@ -166,3 +166,20 @@
     -fx-font-weight: NORMAL;     /* Remove bold */
 }
 
+
+.red_btn {
+    -fx-font-family: "Sofia Pro";
+    -fx-font-size: 15px;
+    -fx-background-color: #CC0C0C;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-opacity: 1;  
+    -fx-transition: all 0.2s ease-in-out; 
+}
+
+.red_btn:pressed {
+    -fx-background-color: #A30909; 
+}

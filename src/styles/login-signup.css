@@ -1,0 +1,13 @@
+.button_login{
+	-fx-font-family: "Sofia Pro"; 
+	-fx-font-size: 21px;
+	-fx-font-weight: Bold; 
+	-fx-text-fill: white;  
+	-fx-cursor: hand; 
+	-fx-background-color: #FE724C; 
+}
+
+.button_login:pressed {
+    -fx-background-color: #CE5D3D; 
+}
+
