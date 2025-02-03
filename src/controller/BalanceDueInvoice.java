@@ -22,6 +22,16 @@ public class BalanceDueInvoice {
         this.advance = advance;
         this.status = status;
     }
+    
+    public BalanceDueInvoice(String property, String unit, String date, String billType,
+            double amount) {
+		this.property = property;
+		this.unit = unit;
+		this.date = date;
+		this.billType = billType;
+		this.amount = amount;
+	}
+    
 
     // Getters and setters
     public String getProperty() { 

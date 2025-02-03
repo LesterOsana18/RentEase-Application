@@ -223,11 +223,11 @@
                   <ComboBox fx:id="payment_history_year_cmb_box" layoutX="217.0" layoutY="17.0" onAction="#payment_history_year_cmb_box_clicked" prefHeight="25.0" prefWidth="55.0" promptText="Year" style="-fx-background-radius: 16.67; -fx-background-color: F4F7FE;" styleClass="date_cmbBox" stylesheets="@../styles/dashboard.css" />
                   <TableView fx:id="payment_history_table_view" layoutY="57.0" prefHeight="461.0" prefWidth="463.0" style="-fx-background-color: F4F7FE;" styleClass="column-header" stylesheets="@../styles/dashboard.css">
                      <columns>
-                        <TableColumn id="property_column" prefWidth="138.0" text="Properties" />
-                        <TableColumn minWidth="0.0" text="Unit" />
-                        <TableColumn text="Date" />
-                        <TableColumn text="Bill Type" />
-                        <TableColumn prefWidth="93.0" text="Amount" />
+                        <TableColumn id="property_column" fx:id="p_property" prefWidth="138.0" text="Properties" />
+                        <TableColumn fx:id="p_unit" minWidth="0.0" text="Unit" />
+                        <TableColumn fx:id="p_date" text="Date" />
+                        <TableColumn fx:id="p_bill_type" text="Bill Type" />
+                        <TableColumn fx:id="p_amount" prefWidth="93.0" text="Amount" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -248,7 +248,7 @@
                      </font>
                   </Button>
                   <ComboBox fx:id="balance_due_month_cmb_box" layoutX="156.0" layoutY="17.0" onAction="#balance_due_month_cmb_box_clicked" prefHeight="25.0" prefWidth="55.0" promptText="Month" style="-fx-background-radius: 16.67; -fx-background-color: F4F7FE;" styleClass="date_cmbBox" stylesheets="@../styles/dashboard.css" />
-                  <Button fx:id="payment_history_filter_btn" layoutX="276.0" layoutY="17.0" mnemonicParsing="false" onAction="#payment_history_filter_btn_clicked" prefHeight="26.0" prefWidth="55.0" style="-fx-background-radius: 16.67; -fx-background-color: F4F7FE; -fx-text-fill: FE724C;" styleClass="seeAll_Btn" stylesheets="@../styles/dashboard.css" text="Filter" textFill="WHITE" wrapText="true">
+                  <Button fx:id="balance_due_filter_btn" layoutX="276.0" layoutY="17.0" mnemonicParsing="false" onAction="#balance_due_history_filter_btn_clicked" prefHeight="26.0" prefWidth="55.0" style="-fx-background-radius: 16.67; -fx-background-color: F4F7FE; -fx-text-fill: FE724C;" styleClass="seeAll_Btn" stylesheets="@../styles/dashboard.css" text="Filter" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="9.0" />
                      </font>
@@ -256,11 +256,11 @@
                   <ComboBox fx:id="balance_due_year_cmb_box" layoutX="217.0" layoutY="17.0" onAction="#balance_due_year_cmb_box_clicked" prefHeight="25.0" prefWidth="55.0" promptText="Year" style="-fx-background-radius: 16.67; -fx-background-color: F4F7FE;" styleClass="date_cmbBox" stylesheets="@../styles/dashboard.css" />
                   <TableView fx:id="balance_due_table_view" layoutY="58.0" prefHeight="461.0" prefWidth="463.0" style="-fx-background-color: F4F7FE;" styleClass="column-header" stylesheets="@../styles/dashboard.css">
                     <columns>
-                      <TableColumn id="property_column" prefWidth="138.0" text="Properties" />
-                      <TableColumn minWidth="0.0" text="Unit" />
-                        <TableColumn text="Date" />
-                        <TableColumn text="Bill Type" />
-                        <TableColumn prefWidth="93.0" text="Amount" />
+                      <TableColumn id="property_column" fx:id="b_property" prefWidth="138.0" text="Properties" />
+                      <TableColumn fx:id="b_unit" minWidth="0.0" text="Unit" />
+                        <TableColumn fx:id="b_date" text="Date" />
+                        <TableColumn fx:id="b_bill_type" text="Bill Type" />
+                        <TableColumn fx:id="b_amount" prefWidth="93.0" text="Amount" />
                     </columns>
                   </TableView>
                </children>

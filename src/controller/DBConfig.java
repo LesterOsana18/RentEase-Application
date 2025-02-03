@@ -543,4 +543,106 @@ public class DBConfig {
 
         return totalRevenue;
     }
+
+    public static List<BalanceDueInvoice> getDashboardBalanceDueInvoices(Stage stage) {
+        List<BalanceDueInvoice> invoices = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            int userId = getUserId(stage);
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            preparedStatement = connection.prepareStatement("SELECT property, unit, date, bill_type, amount FROM balance_due WHERE b_user_id = ?");
+            preparedStatement.setInt(1, userId);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                invoices.add(new BalanceDueInvoice(
+                        resultSet.getString("property"),
+                        resultSet.getString("unit"),
+                        resultSet.getString("date"),
+                        resultSet.getString("bill_type"),
+                        resultSet.getDouble("amount")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return invoices;
+    }
+
+    public static List<PaymentHistoryInvoice> getDashboardPaymentHistoryInvoices(Stage stage) {
+        List<PaymentHistoryInvoice> invoices = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            int userId = getUserId(stage);
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            preparedStatement = connection.prepareStatement("SELECT property, unit, date, bill_type, amount FROM payment_history WHERE p_user_id = ?");
+            preparedStatement.setInt(1, userId);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                invoices.add(new PaymentHistoryInvoice(
+                        resultSet.getString("property"),
+                        resultSet.getString("unit"),
+                        resultSet.getString("date"),
+                        resultSet.getString("bill_type"),
+                        resultSet.getDouble("amount")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return invoices;
+    }
 }
