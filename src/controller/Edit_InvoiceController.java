@@ -3,6 +3,9 @@ package controller;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -11,7 +14,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -119,7 +124,7 @@ public class Edit_InvoiceController {
 
     @FXML
     void balance_due_btn_clicked(MouseEvent event) {
-        // Handle balance due button click
+    	loadScene(event, "/controller/BalanceDueView.fxml", "RentEase: Balance Due");
     }
 
     @FXML
@@ -129,12 +134,12 @@ public class Edit_InvoiceController {
 
     @FXML
     void create_invoice_btn(MouseEvent event) {
-        // Handle create invoice button click
+    	loadScene(event, "/controller/CreateInvoiceView.fxml", "RentEase: Create Invoice");
     }
 
     @FXML
     void dashboard_btn_clicked(MouseEvent event) {
-        // Handle dashboard button click
+    	loadScene(event, "/controller/DashboardView.fxml", "RentEase: Dashboard");
     }
 
     @FXML
@@ -149,7 +154,7 @@ public class Edit_InvoiceController {
 
     @FXML
     void edit_invoice_btn_clicked(MouseEvent event) {
-        // Handle edit invoice button click
+    	 loadScene(event, "/controller/EditInvoiceView.fxml", "RentEase: Edit Invoice");
     }
 
     @FXML
@@ -209,6 +214,13 @@ public class Edit_InvoiceController {
                 }
 
                 note_text.setText(resultSet.getString("note"));
+
+                // Retrieve and set the status
+                String status = resultSet.getString("status");
+                status_paid_chk_box.setSelected("Paid".equals(status));
+                status_partially_chk_box.setSelected("Partially Paid".equals(status));
+                status_pending_chk_box.setSelected("Pending".equals(status));
+                status_overdue_chk_box.setSelected("Overdue".equals(status));
             } else {
                 showAlert("Error", "No record found matching the selected inputs.");
             }
@@ -259,7 +271,7 @@ public class Edit_InvoiceController {
 
     @FXML
     void help_btn_clicked(MouseEvent event) {
-        // Handle help button click
+    	loadScene(event, "/controller/HelpsFAQsView.fxml", "RentEase: Help & FAQs");
     }
 
     @FXML
@@ -279,12 +291,12 @@ public class Edit_InvoiceController {
 
     @FXML
     void my_profile_btn_clicked(MouseEvent event) {
-        // Handle my profile button click
+    	loadScene(event, "/controller/MyProfileView.fxml", "RentEase: My Profile");
     }
 
     @FXML
     void payment_history_btn_clicked(MouseEvent event) {
-        // Handle payment history button click
+    	loadScene(event, "/controller/PaymentHistoryView.fxml", "RentEase: Payment History");
     }
 
     @FXML
@@ -294,22 +306,52 @@ public class Edit_InvoiceController {
 
     @FXML
     void status_overdue_chk_box_clicked(ActionEvent event) {
-        // Handle status overdue checkbox click
+        if (status_overdue_chk_box.isSelected()) {
+            status_paid_chk_box.setSelected(false);
+            status_partially_chk_box.setSelected(false);
+            status_pending_chk_box.setSelected(false);
+        }
     }
 
     @FXML
     void status_paid_chk_box_clicked(ActionEvent event) {
-        // Handle status paid checkbox click
+        if (status_paid_chk_box.isSelected()) {
+            status_overdue_chk_box.setSelected(false);
+            status_partially_chk_box.setSelected(false);
+            status_pending_chk_box.setSelected(false);
+        }
     }
 
     @FXML
     void status_partially_chk_box_clicked(ActionEvent event) {
-        // Handle status partially checkbox click
+        if (status_partially_chk_box.isSelected()) {
+            status_overdue_chk_box.setSelected(false);
+            status_paid_chk_box.setSelected(false);
+            status_pending_chk_box.setSelected(false);
+        }
     }
 
     @FXML
     void status_pending_chk_box_clicked(ActionEvent event) {
-        // Handle status pending checkbox click
+        if (status_pending_chk_box.isSelected()) {
+            status_overdue_chk_box.setSelected(false);
+            status_paid_chk_box.setSelected(false);
+            status_partially_chk_box.setSelected(false);
+        }
+    }
+    
+    private void loadScene(MouseEvent event, String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle(title);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
