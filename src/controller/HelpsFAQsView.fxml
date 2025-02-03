@@ -127,12 +127,12 @@
                   </Text>
                </children>
             </Pane>
-            <Text fill="#2b3674" layoutX="224.31" layoutY="64.61" strokeType="OUTSIDE" strokeWidth="0.0" text="Help &amp; FAQs">
+            <Text fill="#2b3674" layoutX="224.31" layoutY="64.61" strokeType="OUTSIDE" strokeWidth="0.0" text="Help and FAQs">
                <font>
                   <Font name="SofiaPro-SemiBold" size="27.78" />
                </font>
             </Text>
-            <Text fill="#707eae" layoutX="224.31" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pages / Dashboard">
+            <Text fill="#707eae" layoutX="224.31" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pages / Help and FAQs">
                <font>
                   <Font name="SofiaPro-SemiBold" size="13.89" />
                </font>

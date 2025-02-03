@@ -20,6 +20,7 @@ public class Main extends Application {
 			Scene scene = new Scene(root, 1200, 780);
 			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/imgs/logo.png")));
 			primaryStage.setTitle("RentEase: Simplifying Rent and Utility Management");
+			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
