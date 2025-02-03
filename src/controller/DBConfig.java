@@ -32,6 +32,10 @@ public class DBConfig {
             PASSWORD = "1123";
         }
     }
+    
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
 
     public static void changeScene(ActionEvent event, String fxmlFile, String title, String username) {
         Parent root = null;
@@ -170,7 +174,7 @@ public class DBConfig {
         }
     }
 
-    private static int getUserId(Stage stage) {
+    public static int getUserId(Stage stage) {
         return (int) stage.getUserData();
     }
 
@@ -786,5 +790,138 @@ public class DBConfig {
             }
         }
     }
+    
+    public static int getCurrentUserId(Stage stage) {
+        return (int) stage.getUserData();
+    }
+    
+    public static void handleInvoiceUpdate(String tableName, String operation, String property, String unit, String billType, String date, double amount, int depositMonths, int advanceMonths, String status, String note, int userId) throws SQLException {
+        String query;
+        switch (operation) {
+            case "checkExists":
+                query = String.format("SELECT 1 FROM %s WHERE property = ? AND unit = ? AND bill_type = ?", tableName);
+                break;
+            case "insert":
+                query = String.format("INSERT INTO %s (property, unit, bill_type, date, amount, deposit, advanced, status, note, b_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", tableName);
+                break;
+            case "update":
+                query = String.format("UPDATE %s SET date = ?, amount = ?, deposit = ?, advanced = ?, status = ?, note = ? WHERE property = ? AND unit = ? AND bill_type = ?", tableName);
+                break;
+            case "delete":
+                query = String.format("DELETE FROM %s WHERE property = ? AND unit = ? AND bill_type = ?", tableName);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid operation: " + operation);
+        }
 
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            
+            switch (operation) {
+                case "checkExists":
+                    statement.setString(1, property);
+                    statement.setString(2, unit);
+                    statement.setString(3, billType);
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        resultSet.next();
+                    }
+                    break;
+                case "insert":
+                    statement.setString(1, property);
+                    statement.setString(2, unit);
+                    statement.setString(3, billType);
+                    statement.setString(4, date);
+                    statement.setDouble(5, amount);
+                    statement.setInt(6, depositMonths);
+                    statement.setInt(7, advanceMonths);
+                    statement.setString(8, status);
+                    statement.setString(9, note);
+                    statement.setInt(10, userId);
+                    statement.executeUpdate();
+                    break;
+                case "update":
+                    statement.setString(1, date);
+                    statement.setDouble(2, amount);
+                    statement.setInt(3, depositMonths);
+                    statement.setInt(4, advanceMonths);
+                    statement.setString(5, status);
+                    statement.setString(6, note);
+                    statement.setString(7, property);
+                    statement.setString(8, unit);
+                    statement.setString(9, billType);
+                    statement.executeUpdate();
+                    break;
+                case "delete":
+                    statement.setString(1, property);
+                    statement.setString(2, unit);
+                    statement.setString(3, billType);
+                    statement.executeUpdate();
+                    break;
+            }
+        }
+    }
+    
+    public static boolean checkRecordExists(String tableName, String property, String unit, String billType) throws SQLException {
+        String query = String.format("SELECT 1 FROM %s WHERE property = ? AND unit = ? AND bill_type = ?", tableName);
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, property);
+            statement.setString(2, unit);
+            statement.setString(3, billType);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
+    public static boolean insertRecord(String tableName, String property, String unit, String billType, String date, double amount, int deposit, int advanced, String status, String note, int userId) throws SQLException {
+        String query = String.format("INSERT INTO %s (property, unit, bill_type, date, amount, deposit, advanced, status, note, %s) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", tableName, tableName.equals("balance_due") ? "b_user_id" : "p_user_id");
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, property);
+            statement.setString(2, unit);
+            statement.setString(3, billType);
+            statement.setString(4, date);
+            statement.setDouble(5, amount);
+            statement.setInt(6, deposit);
+            statement.setInt(7, advanced);
+            statement.setString(8, status);
+            statement.setString(9, note);
+            statement.setInt(10, userId);
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+
+    public static boolean updateRecord(String tableName, String property, String unit, String billType, String date, double amount, int deposit, int advanced, String status, String note) throws SQLException {
+        String query = String.format("UPDATE %s SET date = ?, amount = ?, deposit = ?, advanced = ?, status = ?, note = ? WHERE property = ? AND unit = ? AND bill_type = ?", tableName);
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, date);
+            statement.setDouble(2, amount);
+            statement.setInt(3, deposit);
+            statement.setInt(4, advanced);
+            statement.setString(5, status);
+            statement.setString(6, note);
+            statement.setString(7, property);
+            statement.setString(8, unit);
+            statement.setString(9, billType);
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+
+    public static boolean deleteRecord(String tableName, String property, String unit, String billType) throws SQLException {
+        String query = String.format("DELETE FROM %s WHERE property = ? AND unit = ? AND bill_type = ?", tableName);
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, property);
+            statement.setString(2, unit);
+            statement.setString(3, billType);
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+    
+    
 }

@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -185,29 +186,24 @@ public class CreateInvoiceController implements Initializable {
         // Calculate initial payment amount if status is "Partially Paid".
         double initialPayment = parseDoubleOrZero(paid_amount_text_field.getText());
 
-        String paymentQuery = "INSERT INTO payment_history (p_user_id, property, unit, date, bill_type, amount, deposit, advanced, status, note)"
-                            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String balanceDueQuery = "INSERT INTO balance_due (b_user_id, property, unit, date, bill_type, amount, deposit, advanced, status, note)"
-                               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        int userId = DBConfig.getCurrentUserId(stage);
 
-        try (Connection connection = DBConfig.getConnection();
-             PreparedStatement paymentStatement = connection.prepareStatement(paymentQuery);
-             PreparedStatement balanceDueStatement = connection.prepareStatement(balanceDueQuery)) {
-
+        try (Connection connection = DBConfig.getConnection()) {
             // Insert into the appropriate table based on status
             if ("Paid".equals(status)) {
                 // Insert into payment_history for each bill type
                 if (rentBill > 0) {
-                    insertBill(paymentStatement, 1, property, unit, date, "Rent", adjustedRentBill, depositMonths, advanceMonths, status, note);
+                    DBConfig.insertRecord("payment_history", property, unit, "Rent", date, adjustedRentBill, depositMonths, advanceMonths, status, note, userId);
                 }
                 if (electricityBill > 0) {
-                    insertBill(paymentStatement, 1, property, unit, date, "Electricity", electricityBill, 0, 0, status, note);
+                    DBConfig.insertRecord("payment_history", property, unit, "Electricity", date, electricityBill, 0, 0, status, note, userId);
                 }
                 if (waterBill > 0) {
-                    insertBill(paymentStatement, 1, property, unit, date, "Water", waterBill, 0, 0, status, note);
+                    DBConfig.insertRecord("payment_history", property, unit, "Water", date, waterBill, 0, 0, status, note, userId);
                 }
                 if (wifiBill > 0) {
-                    insertBill(paymentStatement, 1, property, unit, date, "Wi-Fi", wifiBill, 0, 0, status, note);
+                    DBConfig.insertRecord("payment_history", property, unit, "Wi-Fi", date, wifiBill, 0, 0, status, note, userId);
                 }
             } else if ("Partially Paid".equals(status)) {
                 // Ensure only one bill type is provided for partially paid status
@@ -219,13 +215,13 @@ public class CreateInvoiceController implements Initializable {
                     // Insert into payment_history for initial payment
                     if (initialPayment > 0) {
                         if (rentBill > 0) {
-                            insertBill(paymentStatement, 1, property, unit, date, "Rent", initialPayment, depositMonths, advanceMonths, status, note);
+                            DBConfig.insertRecord("payment_history", property, unit, "Rent", date, initialPayment, depositMonths, advanceMonths, status, note, userId);
                         } else if (electricityBill > 0) {
-                            insertBill(paymentStatement, 1, property, unit, date, "Electricity", initialPayment, 0, 0, status, note);
+                            DBConfig.insertRecord("payment_history", property, unit, "Electricity", date, initialPayment, 0, 0, status, note, userId);
                         } else if (waterBill > 0) {
-                            insertBill(paymentStatement, 1, property, unit, date, "Water", initialPayment, 0, 0, status, note);
+                            DBConfig.insertRecord("payment_history", property, unit, "Water", date, initialPayment, 0, 0, status, note, userId);
                         } else if (wifiBill > 0) {
-                            insertBill(paymentStatement, 1, property, unit, date, "Wi-Fi", initialPayment, 0, 0, status, note);
+                            DBConfig.insertRecord("payment_history", property, unit, "Wi-Fi", date, initialPayment, 0, 0, status, note, userId);
                         }
                     }
 
@@ -234,13 +230,13 @@ public class CreateInvoiceController implements Initializable {
 
                     if (remainingBalance > 0) {
                         if (rentBill > 0) {
-                            insertBill(balanceDueStatement, 1, property, unit, date, "Rent", remainingBalance, depositMonths, advanceMonths, "Pending", note);
+                            DBConfig.insertRecord("balance_due", property, unit, "Rent", date, remainingBalance, depositMonths, advanceMonths, "Pending", note, userId);
                         } else if (electricityBill > 0) {
-                            insertBill(balanceDueStatement, 1, property, unit, date, "Electricity", electricityBill - initialPayment, 0, 0, "Pending", note);
+                            DBConfig.insertRecord("balance_due", property, unit, "Electricity", date, electricityBill - initialPayment, 0, 0, "Pending", note, userId);
                         } else if (waterBill > 0) {
-                            insertBill(balanceDueStatement, 1, property, unit, date, "Water", waterBill - initialPayment, 0, 0, "Pending", note);
+                            DBConfig.insertRecord("balance_due", property, unit, "Water", date, waterBill - initialPayment, 0, 0, "Pending", note, userId);
                         } else if (wifiBill > 0) {
-                            insertBill(balanceDueStatement, 1, property, unit, date, "Wi-Fi", wifiBill - initialPayment, 0, 0, "Pending", note);
+                            DBConfig.insertRecord("balance_due", property, unit, "Wi-Fi", date, wifiBill - initialPayment, 0, 0, "Pending", note, userId);
                         }
                     }
                 } else {
@@ -250,16 +246,16 @@ public class CreateInvoiceController implements Initializable {
             } else if ("Pending".equals(status) || "Overdue".equals(status)) {
                 // Insert into balance_due for each bill type
                 if (rentBill > 0) {
-                    insertBill(balanceDueStatement, 1, property, unit, date, "Rent", adjustedRentBill, depositMonths, advanceMonths, status, note);
+                    DBConfig.insertRecord("balance_due", property, unit, "Rent", date, adjustedRentBill, depositMonths, advanceMonths, status, note, userId);
                 }
                 if (electricityBill > 0) {
-                    insertBill(balanceDueStatement, 1, property, unit, date, "Electricity", electricityBill, 0, 0, status, note);
+                    DBConfig.insertRecord("balance_due", property, unit, "Electricity", date, electricityBill, 0, 0, status, note, userId);
                 }
                 if (waterBill > 0) {
-                    insertBill(balanceDueStatement, 1, property, unit, date, "Water", waterBill, 0, 0, status, note);
+                    DBConfig.insertRecord("balance_due", property, unit, "Water", date, waterBill, 0, 0, status, note, userId);
                 }
                 if (wifiBill > 0) {
-                    insertBill(balanceDueStatement, 1, property, unit, date, "Wi-Fi", wifiBill, 0, 0, status, note);
+                    DBConfig.insertRecord("balance_due", property, unit, "Wi-Fi", date, wifiBill, 0, 0, status, note, userId);
                 }
             }
 
