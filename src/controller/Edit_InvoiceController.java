@@ -37,7 +37,7 @@ public class Edit_InvoiceController implements Initializable {
     @FXML private DatePicker date_picker;
     @FXML private Button delete_btn, edit_btn, logout_btn;
     @FXML private TextField electricity_text_field, monthly_advance_text, monthly_deposit_text, note_text, rent_bill_text_field, paid_amount_text_field, water_text_field, wifi_text_field;
-    @FXML private CheckBox monthly_advance_chk_box, monthly_deposit_chk_box, repeat_monthly_chk_box, status_overdue_chk_box, status_paid_chk_box, status_partially_chk_box, status_pending_chk_box;
+    @FXML private CheckBox monthly_advance_chk_box, monthly_deposit_chk_box, status_overdue_chk_box, status_paid_chk_box, status_partially_chk_box, status_pending_chk_box;
 
     private final String PAYMENT_HISTORY_QUERY = "SELECT DISTINCT property FROM payment_history WHERE p_user_id = ? UNION SELECT DISTINCT property FROM balance_due WHERE b_user_id = ?";
     private final String UNITS_QUERY = "SELECT DISTINCT unit FROM payment_history WHERE property = ? AND p_user_id = ? UNION SELECT DISTINCT unit FROM balance_due WHERE property = ? AND b_user_id = ?";
@@ -440,7 +440,6 @@ public class Edit_InvoiceController implements Initializable {
         status_overdue_chk_box.setDisable(true);
         monthly_deposit_chk_box.setDisable(true);
         monthly_advance_chk_box.setDisable(true);
-        repeat_monthly_chk_box.setDisable(true);
     }
 
     private void enableMiscellaneousAndStatus() {
@@ -454,7 +453,6 @@ public class Edit_InvoiceController implements Initializable {
         status_overdue_chk_box.setDisable(false);
         monthly_deposit_chk_box.setDisable(false);
         monthly_advance_chk_box.setDisable(false);
-        repeat_monthly_chk_box.setDisable(false);
     }
 
     @FXML
@@ -707,21 +705,6 @@ public class Edit_InvoiceController implements Initializable {
     @FXML
     void payment_history_btn_clicked(MouseEvent event) {
         loadFXMLView("/controller/PaymentHistoryView.fxml", "RentEase: Payment History", event);
-    }
-
-    @FXML
-    void repeat_monthly_chk_box_clicked(ActionEvent event) {
-        // Check if the repeat_monthly_chk_box is selected
-        if (repeat_monthly_chk_box.isSelected()) {
-            // Create an information alert
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Notification");
-            alert.setHeaderText("Repeat Monthly");
-            alert.setContentText("You will be notified 5 days prior to the deadline.");
-
-            // Show the alert and wait for the user's response
-            alert.showAndWait();
-        }
     }
     
     @FXML

@@ -24,9 +24,6 @@ import javafx.stage.Stage;
 
 public class CreateInvoiceController implements Initializable {
 
-    // Variable to store the state of repeat_monthly_chk_box
-    private static boolean isRepeatMonthlyChecked = false;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ObservableList<Integer> months = FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
@@ -47,8 +44,6 @@ public class CreateInvoiceController implements Initializable {
         water_text_field.setOnKeyReleased(this::water_text_field_listener);
         wifi_text_field.setOnKeyReleased(this::wifi_text_field_listener);
 
-        // Store the state of repeat_monthly_chk_box when it is clicked
-        repeat_monthly_chk_box.setOnAction(e -> isRepeatMonthlyChecked = repeat_monthly_chk_box.isSelected());
     }
 
     private void handleStatusCheckboxSelection(CheckBox selectedCheckBox) {
@@ -143,7 +138,7 @@ public class CreateInvoiceController implements Initializable {
     @FXML private Text balance_due_btn, create_invoice_btn, dashboard_btn;
     @FXML private DatePicker date_picker;
     @FXML private Text edit_invoice_btn, help_btn, my_profile_btn, payment_history_btn;
-    @FXML private CheckBox monthly_advance_chk_box, monthly_deposit_chk_box, repeat_monthly_chk_box, status_overdue_chk_box, status_paid_chk_box, status_partially_chk_box, status_pending_chk_box;
+    @FXML private CheckBox monthly_advance_chk_box, monthly_deposit_chk_box, status_overdue_chk_box, status_paid_chk_box, status_partially_chk_box, status_pending_chk_box;
     @FXML private TextField monthly_advance_text, monthly_deposit_text, note_text, property_text_field, paid_amount_text_field, unit_text_field, rent_bill_text_field, electricity_text_field, water_text_field, wifi_text_field;
 
     private void insertBill(PreparedStatement statement, int userId, String property, String unit, String date, String billType, double amount, int depositMonths, int advanceMonths, String status, String note) throws SQLException {
@@ -372,14 +367,6 @@ public class CreateInvoiceController implements Initializable {
     }
 
     @FXML
-    void repeat_monthly_chk_box_clicked(ActionEvent event) {
-        // Check if the repeat_monthly_chk_box is selected
-        if (repeat_monthly_chk_box.isSelected()) {
-        	showAlert("Repeat Monthly", "You will be notified 5 days prior to the deadline.");
-        }
-    }
-
-    @FXML
     void status_overdue_chk_box_clicked(ActionEvent event) {
 
     }
@@ -399,8 +386,4 @@ public class CreateInvoiceController implements Initializable {
 
     }
 
-    // Method to get the state of repeat_monthly_chk_box
-    public static boolean isRepeatMonthlyChecked() {
-        return isRepeatMonthlyChecked;
-    }
 }

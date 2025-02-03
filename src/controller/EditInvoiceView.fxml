@@ -192,12 +192,6 @@
                         <Font name="SofiaPro" size="13.19" />
                      </font>
                   </Text>
-                  <CheckBox fx:id="repeat_monthly_chk_box" disable="true" layoutX="556.0" layoutY="336.0" mnemonicParsing="false" onAction="#repeat_monthly_chk_box_clicked" stylesheets="@../styles/invoice.css" />
-                  <Text fill="#2b3674" layoutX="590.0" layoutY="352.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DO YOU WANT TO REPEAT THIS INVOICE MONTHLY?">
-                     <font>
-                        <Font name="SofiaPro" size="13.19" />
-                     </font>
-                  </Text>
                   <Text fill="#2b3674" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status" x="28.47" y="224.08">
                      <font>
                         <Font name="SofiaPro" size="20.64" />
