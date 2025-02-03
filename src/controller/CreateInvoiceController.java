@@ -1,18 +1,23 @@
 package controller;
 
 import java.io.IOException;
+
 import java.net.URL;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -78,9 +83,23 @@ public class CreateInvoiceController implements Initializable  {
     @FXML private CheckBox monthly_advance_chk_box, monthly_deposit_chk_box, repeat_monthly_chk_box, status_overdue_chk_box, status_paid_chk_box, status_partially_chk_box, status_pending_chk_box;
     @FXML private TextField monthly_advance_text, monthly_deposit_text, note_text, property_text_field, total_amount_text_field, unit_text_field, rent_bill_text_field, electricity_text_field, water_text_field, wifi_text_field;
     
+    private void insertBill(PreparedStatement statement, Connection connection, int userId, String property, String unit, String date, String billType, double amount, int depositMonths, int advanceMonths, String status, String note) throws SQLException {
+        statement.setInt(1, userId); // Replace with actual user ID
+        statement.setString(2, property);
+        statement.setString(3, unit);
+        statement.setString(4, date);
+        statement.setString(5, billType);
+        statement.setDouble(6, amount);
+        statement.setInt(7, depositMonths);
+        statement.setInt(8, advanceMonths);
+        statement.setString(9, status);
+        statement.setString(10, note);
+        statement.executeUpdate();
+    }
+    
     @FXML
     void add_btn_clicked(ActionEvent event) {
-        String property = property_text_field.getText();
+    	String property = property_text_field.getText();
         String unit = unit_text_field.getText();
         String date = (date_picker.getValue() != null) ? date_picker.getValue().toString() : null;
         double rentBill = parseDoubleOrZero(rent_bill_text_field.getText());
@@ -96,23 +115,10 @@ public class CreateInvoiceController implements Initializable  {
             showAlert("Error", "Please fill all required fields and select a status.");
             return;
         }
-        
-        StringBuilder billTypeBuilder = new StringBuilder();
-        if (rentBill > 0) billTypeBuilder.append("Rent, ");
-        if (electricityBill > 0) billTypeBuilder.append("Electricity, ");
-        if (waterBill > 0) billTypeBuilder.append("Water, ");
-        if (wifiBill > 0) billTypeBuilder.append("Wi-Fi, ");
-        
-        if (billTypeBuilder.length() > 0) {
-            billTypeBuilder.setLength(billTypeBuilder.length() - 2);
-        }
-        
-        String billType = billTypeBuilder.toString();
-        double totalAmount = rentBill + electricityBill + waterBill + wifiBill;
-        
+
         // Calculate initial payment amount if status is "Partially Paid".
-    	double initialPayment = parseDoubleOrZero(total_amount_text_field.getText()); 
-    	
+        double initialPayment = parseDoubleOrZero(total_amount_text_field.getText());
+
         String paymentQuery = "INSERT INTO payment_history (p_user_id, property, unit, date, bill_type, amount, deposit, advanced, status, note)"
                             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String balanceDueQuery = "INSERT INTO balance_due (b_user_id, property, unit, date, bill_type, amount, deposit, advanced, status, note)"
@@ -122,36 +128,38 @@ public class CreateInvoiceController implements Initializable  {
              PreparedStatement paymentStatement = connection.prepareStatement(paymentQuery);
              PreparedStatement balanceDueStatement = connection.prepareStatement(balanceDueQuery)) {
             
-            // Insert into payment_history
-            paymentStatement.setInt(1, 1); // Replace with actual user ID
-            paymentStatement.setString(2, property);
-            paymentStatement.setString(3, unit);
-            paymentStatement.setString(4, date);
-            paymentStatement.setString(5, billType);
-            paymentStatement.setDouble(6, initialPayment);
-            paymentStatement.setInt(7, depositMonths);
-            paymentStatement.setInt(8, advanceMonths);
-            paymentStatement.setString(9, status);
-            paymentStatement.setString(10, note);
-            paymentStatement.executeUpdate();
+            // Insert into payment_history for each bill type
+            if (rentBill > 0) {
+                insertBill(paymentStatement, connection, 1, property, unit, date, "Rent", rentBill, depositMonths, advanceMonths, status, note);
+            }
+            if (electricityBill > 0) {
+                insertBill(paymentStatement, connection, 1, property, unit, date, "Electricity", electricityBill, depositMonths, advanceMonths, status, note);
+            }
+            if (waterBill > 0) {
+                insertBill(paymentStatement, connection, 1, property, unit, date, "Water", waterBill, depositMonths, advanceMonths, status, note);
+            }
+            if (wifiBill > 0) {
+                insertBill(paymentStatement, connection, 1, property, unit, date, "Wi-Fi", wifiBill, depositMonths, advanceMonths, status, note);
+            }
             
             // If partially paid, insert the remaining balance into balance_due
             if ("Partially Paid".equals(status)) {
-                double remainingBalance = totalAmount - initialPayment;
-                
-                balanceDueStatement.setInt(1, 1); // Replace with actual user ID
-                balanceDueStatement.setString(2, property);
-                balanceDueStatement.setString(3, unit);
-                balanceDueStatement.setString(4, date);
-                balanceDueStatement.setString(5, billType);
-                balanceDueStatement.setDouble(6, remainingBalance);
-                balanceDueStatement.setInt(7, depositMonths);
-                balanceDueStatement.setInt(8, advanceMonths);
-                balanceDueStatement.setString(9, "Pending Payment");
-                balanceDueStatement.setString(10, note);
-                balanceDueStatement.executeUpdate();
+                double remainingBalance = rentBill + electricityBill + waterBill + wifiBill - initialPayment;
+                if (remainingBalance > 0) {
+                    balanceDueStatement.setInt(1, 1); // Replace with actual user ID
+                    balanceDueStatement.setString(2, property);
+                    balanceDueStatement.setString(3, unit);
+                    balanceDueStatement.setString(4, date);
+                    balanceDueStatement.setString(5, "Rent, Electricity, Water, Wi-Fi");
+                    balanceDueStatement.setDouble(6, remainingBalance);
+                    balanceDueStatement.setInt(7, depositMonths);
+                    balanceDueStatement.setInt(8, advanceMonths);
+                    balanceDueStatement.setString(9, "Pending Payment");
+                    balanceDueStatement.setString(10, note);
+                    balanceDueStatement.executeUpdate();
+                }
             }
-            
+
             showAlert("Success", "Invoice added successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -181,7 +189,7 @@ public class CreateInvoiceController implements Initializable  {
     @FXML
     void create_invoice_btn(MouseEvent event) {
     	try {
-            // Load the Helps & FAQs FXML file
+            // Load the Create Invoice FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/CreateInvoiceView.fxml"));
             Parent CreateInvoiceRoot = loader.load();
 
@@ -200,7 +208,7 @@ public class CreateInvoiceController implements Initializable  {
     @FXML
     void dashboard_btn_clicked(MouseEvent event) {
     	try {
-            // Load the Helps & FAQs FXML file
+            // Load the Dashboard FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/DashboardView.fxml"));
             Parent DashboardRoot = loader.load();
 
@@ -219,7 +227,7 @@ public class CreateInvoiceController implements Initializable  {
     @FXML
     void edit_invoice_btn_clicked(MouseEvent event) {
     	try {
-            // Load the Helps & FAQs FXML file
+            // Load the Edit Invoice FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/EditInvoiceView.fxml"));
             Parent EditInvoiceRoot = loader.load();
 
@@ -238,7 +246,7 @@ public class CreateInvoiceController implements Initializable  {
     @FXML
     void help_btn_clicked(MouseEvent event) {
     	try {
-            // Load the Helps & FAQs FXML file
+            // Load the Help & FAQs FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/HelpsFAQsView.fxml"));
             Parent HelpsFAQsRoot = loader.load();
 
@@ -257,7 +265,7 @@ public class CreateInvoiceController implements Initializable  {
     @FXML
     void logout_btn_clicked(MouseEvent event) {
     	try {
-            // Load the Helps & FAQs FXML file
+            // Load the Login FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/LoginView.fxml"));
             Parent LoginRoot = loader.load();
 
