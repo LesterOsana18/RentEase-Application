@@ -42,6 +42,8 @@ public class Edit_InvoiceController implements Initializable {
     private static final String PROPERTY_DETAILS_QUERY = "SELECT * FROM payment_history WHERE property = ? UNION SELECT * FROM balance_due WHERE property = ?";
     private static final String UNIT_DETAILS_QUERY = "SELECT * FROM payment_history WHERE property = ? AND unit = ? UNION SELECT * FROM balance_due WHERE property = ? AND unit = ?";
     private static final String UPDATE_QUERY_TEMPLATE = "UPDATE %s SET date = ?, amount = ?, deposit = ?, advanced = ?, status = ?, note = ? WHERE property = ? AND unit = ? AND bill_type = ?";
+    private static final String DELETE_QUERY_TEMPLATE = "DELETE FROM %s WHERE property = ? AND unit = ? AND bill_type = ?";
+    private static final String INSERT_QUERY_TEMPLATE = "INSERT INTO %s (property, unit, bill_type, date, amount, deposit, advanced, status, note, b_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String PAYMENT_HISTORY_TABLE = "payment_history";
     private static final String BALANCE_DUE_TABLE = "balance_due";
 
@@ -433,7 +435,7 @@ public class Edit_InvoiceController implements Initializable {
     }
 
     private boolean deleteRecordFromTable(String tableName, String property, String unit, String billType) {
-        String deleteQuery = String.format("DELETE FROM %s WHERE property = ? AND unit = ? AND bill_type = ?", tableName);
+        String deleteQuery = String.format(DELETE_QUERY_TEMPLATE, tableName);
         try (Connection connection = DBConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
             statement.setString(1, property);
@@ -458,6 +460,7 @@ public class Edit_InvoiceController implements Initializable {
         int depositMonths = monthly_deposit_chk_box.isSelected() ? Integer.parseInt(monthly_deposit_text.getText().trim()) : 0;
         int advanceMonths = monthly_advance_chk_box.isSelected() ? Integer.parseInt(monthly_advance_text.getText().trim()) : 0;
         String note = note_text.getText().trim();
+        int userId = getCurrentUserId(); // Assume this method gets the current user ID
 
         if (property == null || unit == null || billType == null || status == null || date == null) {
             showAlert("Error", "Please fill all required fields and select a status.");
@@ -477,12 +480,39 @@ public class Edit_InvoiceController implements Initializable {
             return;
         }
 
-        if (recordExistsInPaymentHistory) {
-            updateRecord(PAYMENT_HISTORY_TABLE, date, amount, depositMonths, advanceMonths, status, note, property, unit, billType);
-        }
-
-        if (recordExistsInBalanceDue) {
-            updateRecord(BALANCE_DUE_TABLE, date, amount, depositMonths, advanceMonths, status, note, property, unit, billType);
+        // Handle status change logic
+        if (status.equals("Paid")) {
+            // If the record is in balance_due, move it to payment_history
+            if (recordExistsInBalanceDue) {
+                deleteRecord(BALANCE_DUE_TABLE, property, unit, billType);
+                insertRecord(PAYMENT_HISTORY_TABLE, property, unit, billType, date, amount, depositMonths, advanceMonths, status, note, userId);
+            }
+            // Otherwise, just update the record in payment_history
+            else {
+                updateRecord(PAYMENT_HISTORY_TABLE, date, amount, depositMonths, advanceMonths, status, note, property, unit, billType);
+            }
+        } else if (status.equals("Pending Payment") || status.equals("Overdue Payment")) {
+            // If the record is in payment_history, move it to balance_due
+            if (recordExistsInPaymentHistory) {
+                deleteRecord(PAYMENT_HISTORY_TABLE, property, unit, billType);
+                insertRecord(BALANCE_DUE_TABLE, property, unit, billType, date, amount, depositMonths, advanceMonths, status, note, userId);
+            }
+            // Otherwise, just update the record in balance_due
+            else {
+                updateRecord(BALANCE_DUE_TABLE, date, amount, depositMonths, advanceMonths, status, note, property, unit, billType);
+            }
+        } else if (status.equals("Partially Paid")) {
+            // Handle partially paid logic
+            double paidAmount = parseDoubleOrZero(paid_amount_text_field.getText());
+            if (paidAmount > 0) {
+                // Insert partially paid record into payment_history
+                insertRecord(PAYMENT_HISTORY_TABLE, property, unit, billType, date, paidAmount, depositMonths, advanceMonths, "Partially Paid", note, userId);
+                // Calculate remaining amount and insert it into balance_due
+                double remainingAmount = amount - paidAmount;
+                insertRecord(BALANCE_DUE_TABLE, property, unit, billType, date, remainingAmount, depositMonths, advanceMonths, "Pending Payment", note, userId);
+            } else {
+                showAlert("Error", "Please enter a valid paid amount for partial payment.");
+            }
         }
     }
 
@@ -526,6 +556,44 @@ public class Edit_InvoiceController implements Initializable {
             handleDatabaseError("Database error: Unable to update record", e);
         }
     }
+
+    private void deleteRecord(String tableName, String property, String unit, String billType) {
+        String deleteQuery = String.format(DELETE_QUERY_TEMPLATE, tableName);
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
+            deleteStatement.setString(1, property);
+            deleteStatement.setString(2, unit);
+            deleteStatement.setString(3, billType);
+
+            deleteStatement.executeUpdate();
+        } catch (SQLException e) {
+            handleDatabaseError("Database error: Unable to delete record from " + tableName, e);
+        }
+    }
+
+    private void insertRecord(String tableName, String property, String unit, String billType, String date, double amount, int depositMonths, int advanceMonths, String status, String note, int userId) {
+        String insertQuery = String.format(INSERT_QUERY_TEMPLATE, tableName);
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
+            insertStatement.setString(1, property);
+            insertStatement.setString(2, unit);
+            insertStatement.setString(3, billType);
+            insertStatement.setString(4, date);
+            insertStatement.setDouble(5, amount);
+            insertStatement.setInt(6, depositMonths);
+            insertStatement.setInt(7, advanceMonths);
+            insertStatement.setString(8, status);
+            insertStatement.setString(9, note);
+            insertStatement.setInt(10, userId);
+
+            insertStatement.executeUpdate();
+            showAlert("Success", String.format("Record inserted successfully in %s.", tableName));
+        } catch (SQLException e) {
+            handleDatabaseError("Database error: Unable to insert record into " + tableName, e);
+        }
+    }
+
+    // Other methods remain unchanged...
 
     @FXML
     void edit_invoice_btn_clicked(MouseEvent event) {
@@ -625,5 +693,11 @@ public class Edit_InvoiceController implements Initializable {
     private void handleDatabaseError(String message, SQLException e) {
         e.printStackTrace();
         showAlert("Error", message + ": " + e.getMessage());
+    }
+
+    // Dummy method to get the current user ID
+    private int getCurrentUserId() {
+        // Replace with actual logic to get the current user ID
+        return 1; // Example user ID
     }
 }
