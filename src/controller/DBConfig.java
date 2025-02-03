@@ -507,7 +507,7 @@ public class DBConfig {
         try {
             int userId = getUserId(stage);
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            String query = "SELECT SUM(amount) AS total FROM payment_history WHERE p_user_id = ?";
+            String query = "SELECT SUM(amount) AS total FROM payment_history WHERE p_user_id = ? AND bill_type = 'Rent'";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, userId);
             resultSet = preparedStatement.executeQuery();
