@@ -58,7 +58,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Text>
-                  <Text fx:id="help_btn" fill="#a3aed0" layoutX="47.92" layoutY="307.75" onMouseClicked="#help_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Helps &amp; FAQs">
+                  <Text fx:id="help_btn" fill="#a3aed0" layoutX="47.92" layoutY="307.75" onMouseClicked="#help_btn_clicked" strokeType="OUTSIDE" strokeWidth="0.0" text="Helps and FAQs">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
