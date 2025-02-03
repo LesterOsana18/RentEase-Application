@@ -67,9 +67,9 @@ public class MyProfileController implements Initializable {
 
             // Set the current username in the text field
             if (currentUsername != null) {
-                current_username_text_field.setText("Current Username: " + currentUsername);
+                current_username_text_field.setText("CURRENT USERNAME: " + currentUsername);
             } else {
-                current_username_text_field.setText("Current Username: Not found");
+                current_username_text_field.setText("CURRENT USERNAME: Not found");
             }
         });
     }
