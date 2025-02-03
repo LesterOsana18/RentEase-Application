@@ -29,7 +29,6 @@ import javafx.stage.Stage;
 
 public class Edit_InvoiceController implements Initializable {
 
-    // FXML components
     @FXML private Text balance_due_btn, create_invoice_btn, dashboard_btn, edit_invoice_btn, help_btn, my_profile_btn, payment_history_btn;
     @FXML private ComboBox<String> bill_type_cmb_box, property_cmb_box, unit_cmb_box;
     @FXML private DatePicker date_picker;
@@ -37,55 +36,46 @@ public class Edit_InvoiceController implements Initializable {
     @FXML private TextField electricity_text_field, monthly_advance_text, monthly_deposit_text, note_text, rent_bill_text_field, paid_amount_text_field, water_text_field, wifi_text_field;
     @FXML private CheckBox monthly_advance_chk_box, monthly_deposit_chk_box, repeat_monthly_chk_box, status_overdue_chk_box, status_paid_chk_box, status_partially_chk_box, status_pending_chk_box;
 
-    // Constants
-    private static final String PAYMENT_HISTORY_QUERY = "SELECT DISTINCT property FROM payment_history WHERE p_user_id = ? UNION SELECT DISTINCT property FROM balance_due WHERE b_user_id = ?";
-    private static final String UNITS_QUERY = "SELECT DISTINCT unit FROM payment_history WHERE property = ? AND p_user_id = ? UNION SELECT DISTINCT unit FROM balance_due WHERE property = ? AND b_user_id = ?";
-    private static final String PROPERTY_DETAILS_QUERY = "SELECT * FROM payment_history WHERE property = ? AND p_user_id = ? UNION SELECT * FROM balance_due WHERE property = ? AND b_user_id = ?";
-    private static final String UNIT_DETAILS_QUERY = "SELECT * FROM payment_history WHERE property = ? AND unit = ? AND p_user_id = ? UNION SELECT * FROM balance_due WHERE property = ? AND unit = ? AND b_user_id = ?";
-    private static final String UPDATE_QUERY_TEMPLATE = "UPDATE %s SET date = ?, amount = ?, deposit = ?, advanced = ?, status = ?, note = ? WHERE property = ? AND unit = ? AND bill_type = ? AND %s = ?";
-    private static final String DELETE_QUERY_TEMPLATE = "DELETE FROM %s WHERE property = ? AND unit = ? AND bill_type = ? AND %s = ?";
-    private static final String INSERT_QUERY_TEMPLATE = "INSERT INTO %s (property, unit, bill_type, date, amount, deposit, advanced, status, note, %s) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String PAYMENT_HISTORY_TABLE = "payment_history";
-    private static final String BALANCE_DUE_TABLE = "balance_due";
+    private final String PAYMENT_HISTORY_QUERY = "SELECT DISTINCT property FROM payment_history WHERE p_user_id = ? UNION SELECT DISTINCT property FROM balance_due WHERE b_user_id = ?";
+    private final String UNITS_QUERY = "SELECT DISTINCT unit FROM payment_history WHERE property = ? AND p_user_id = ? UNION SELECT DISTINCT unit FROM balance_due WHERE property = ? AND b_user_id = ?";
+    private final String PROPERTY_DETAILS_QUERY = "SELECT * FROM payment_history WHERE property = ? AND p_user_id = ? UNION SELECT * FROM balance_due WHERE property = ? AND b_user_id = ?";
+    private final String UNIT_DETAILS_QUERY = "SELECT * FROM payment_history WHERE property = ? AND unit = ? AND p_user_id = ? UNION SELECT * FROM balance_due WHERE property = ? AND unit = ? AND b_user_id = ?";
+    private final String UPDATE_QUERY_TEMPLATE = "UPDATE %s SET date = ?, amount = ?, deposit = ?, advanced = ?, status = ?, note = ? WHERE property = ? AND unit = ? AND bill_type = ? AND %s = ?";
+    private final String DELETE_QUERY_TEMPLATE = "DELETE FROM %s WHERE property = ? AND unit = ? AND bill_type = ? AND %s = ?";
+    private final String INSERT_QUERY_TEMPLATE = "INSERT INTO %s (property, unit, bill_type, date, amount, deposit, advanced, status, note, %s) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private final String PAYMENT_HISTORY_TABLE = "payment_history";
+    private final String BALANCE_DUE_TABLE = "balance_due";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize combo boxes and disable fields
         bill_type_cmb_box.setItems(FXCollections.observableArrayList("Rent", "Electricity", "Water", "Wi-Fi"));
         disableAllBillTypeFields();
         disableMiscellaneousAndStatus();
-
-        // Set up event handlers
         setupEventHandlers();
     }
 
     private void setupEventHandlers() {
-        // Checkbox event handlers
         monthly_deposit_chk_box.setOnAction(e -> monthly_deposit_text.setDisable(!monthly_deposit_chk_box.isSelected()));
         monthly_advance_chk_box.setOnAction(e -> monthly_advance_text.setDisable(!monthly_advance_chk_box.isSelected()));
-
-        // Status checkbox event handlers
         status_paid_chk_box.setOnAction(e -> handleStatusCheckboxSelection(status_paid_chk_box));
         status_partially_chk_box.setOnAction(e -> handleStatusCheckboxSelection(status_partially_chk_box));
         status_pending_chk_box.setOnAction(e -> handleStatusCheckboxSelection(status_pending_chk_box));
         status_overdue_chk_box.setOnAction(e -> handleStatusCheckboxSelection(status_overdue_chk_box));
-
-        // ComboBox event handlers
         property_cmb_box.setOnMouseClicked(e -> loadProperties());
         unit_cmb_box.setOnMouseClicked(e -> loadUnits());
         unit_cmb_box.setOnAction(e -> loadUnitDetails());
-        bill_type_cmb_box.setOnAction(e -> enableBillTypeField());
+        bill_type_cmb_box.setOnAction(e -> {
+            enableBillTypeField();
+            loadBillTypeDetails();
+        });
     }
 
     private void handleStatusCheckboxSelection(CheckBox selectedCheckBox) {
-        // Deselect other status checkboxes
         if (selectedCheckBox.isSelected()) {
             if (selectedCheckBox != status_paid_chk_box) status_paid_chk_box.setSelected(false);
             if (selectedCheckBox != status_partially_chk_box) status_partially_chk_box.setSelected(false);
             if (selectedCheckBox != status_pending_chk_box) status_pending_chk_box.setSelected(false);
             if (selectedCheckBox != status_overdue_chk_box) status_overdue_chk_box.setSelected(false);
-
-            // Enable/disable paid amount text field based on status
             paid_amount_text_field.setDisable(selectedCheckBox != status_partially_chk_box);
         }
     }
@@ -219,7 +209,10 @@ public class Edit_InvoiceController implements Initializable {
     }
 
     private void loadUnitDetails() {
-        enableMiscellaneousAndStatus();
+        disableAllBillTypeFields();
+        clearDepositAdvanceAndNoteFields();
+        enableStatusCheckboxes();
+
         Stage stage = (Stage) unit_cmb_box.getScene().getWindow();
         int userId = DBConfig.getCurrentUserId(stage);
         String selectedProperty = property_cmb_box.getValue();
@@ -249,17 +242,10 @@ public class Edit_InvoiceController implements Initializable {
     private void populateUnitDetails(ResultSet resultSet) throws SQLException {
         String billType = resultSet.getString("bill_type");
         double amount = resultSet.getDouble("amount");
-        int deposit = resultSet.getInt("deposit");
-        int advanced = resultSet.getInt("advanced");
-        int totalMonths = 1 + deposit + advanced;
 
         switch (billType) {
             case "Rent":
-                if (totalMonths > 0) {
-                    rent_bill_text_field.setText(String.valueOf(amount / totalMonths));
-                } else {
-                    rent_bill_text_field.setText(String.valueOf(amount));
-                }
+                rent_bill_text_field.setText(String.valueOf(amount));
                 break;
             case "Electricity":
                 electricity_text_field.setText(String.valueOf(amount));
@@ -272,31 +258,6 @@ public class Edit_InvoiceController implements Initializable {
                 break;
         }
 
-        // Auto-fill the date picker based on the date in the database
-        date_picker.setValue(resultSet.getDate("date").toLocalDate());
-
-        // Populate monthly deposit and advance fields
-        monthly_deposit_text.setText(String.valueOf(deposit));
-        monthly_advance_text.setText(String.valueOf(advanced));
-
-        // Enable the checkboxes if the values are greater than 0
-        if (deposit > 0) {
-            monthly_deposit_chk_box.setSelected(true);
-            monthly_deposit_text.setDisable(false);
-        } else {
-            monthly_deposit_chk_box.setSelected(false);
-            monthly_deposit_text.setDisable(true);
-        }
-
-        if (advanced > 0) {
-            monthly_advance_chk_box.setSelected(true);
-            monthly_advance_text.setDisable(false);
-        } else {
-            monthly_advance_chk_box.setSelected(false);
-            monthly_advance_text.setDisable(true);
-        }
-
-        // Automatically check the status checkboxes based on the retrieved status
         String status = resultSet.getString("status");
         switch (status) {
             case "Paid":
@@ -314,8 +275,91 @@ public class Edit_InvoiceController implements Initializable {
                 status_overdue_chk_box.setSelected(true);
                 break;
         }
+    }
+    
+    private void clearDepositAdvanceAndNoteFields() {
+        monthly_deposit_chk_box.setSelected(false);
+        monthly_deposit_text.clear();
+        monthly_deposit_text.setDisable(true);
 
-        enableMiscellaneousAndStatus();
+        monthly_advance_chk_box.setSelected(false);
+        monthly_advance_text.clear();
+        monthly_advance_text.setDisable(true);
+
+        note_text.clear();
+        note_text.setDisable(true);
+    }
+
+    private void enableStatusCheckboxes() {
+        status_paid_chk_box.setDisable(false);
+        status_partially_chk_box.setDisable(false);
+        status_pending_chk_box.setDisable(false);
+        status_overdue_chk_box.setDisable(false);
+    }
+    
+    private void loadBillTypeDetails() {
+        Stage stage = (Stage) bill_type_cmb_box.getScene().getWindow();
+        int userId = DBConfig.getCurrentUserId(stage);
+        String selectedProperty = property_cmb_box.getValue();
+        String selectedUnit = unit_cmb_box.getValue();
+        String selectedBillType = bill_type_cmb_box.getValue();
+        if (selectedProperty == null || selectedUnit == null || selectedBillType == null) {
+            return;
+        }
+
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(UNIT_DETAILS_QUERY)) {
+            statement.setString(1, selectedProperty);
+            statement.setString(2, selectedUnit);
+            statement.setInt(3, userId);
+            statement.setString(4, selectedProperty);
+            statement.setString(5, selectedUnit);
+            statement.setInt(6, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String billType = resultSet.getString("bill_type");
+                    if (billType.equals(selectedBillType)) {
+                        populateBillTypeDetails(resultSet);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            handleDatabaseError("Unable to load bill type details", e);
+        }
+    }
+
+    private void populateBillTypeDetails(ResultSet resultSet) throws SQLException {
+        int deposit = resultSet.getInt("deposit");
+        int advanced = resultSet.getInt("advanced");
+        String note = resultSet.getString("note");
+        java.sql.Date date = resultSet.getDate("date");
+
+        if (deposit > 0) {
+            monthly_deposit_chk_box.setSelected(true);
+            monthly_deposit_text.setText(String.valueOf(deposit));
+        } else {
+            monthly_deposit_chk_box.setSelected(false);
+            monthly_deposit_text.clear();
+        }
+        monthly_deposit_text.setDisable(false);
+        monthly_deposit_chk_box.setDisable(false);
+
+        if (advanced > 0) {
+            monthly_advance_chk_box.setSelected(true);
+            monthly_advance_text.setText(String.valueOf(advanced));
+        } else {
+            monthly_advance_chk_box.setSelected(false);
+            monthly_advance_text.clear();
+        }
+        monthly_advance_text.setDisable(false);
+        monthly_advance_chk_box.setDisable(false);
+
+        note_text.setText(note);
+        note_text.setDisable(false);
+
+        if (date != null) {
+            date_picker.setValue(date.toLocalDate());
+        }
     }
 
     private String getBillTypeAmount(String billType) {
@@ -498,8 +542,8 @@ public class Edit_InvoiceController implements Initializable {
         }
 
         try {
-            boolean recordExistsInPaymentHistory = DBConfig.checkRecordExists(PAYMENT_HISTORY_TABLE, property, unit, billType);
-            boolean recordExistsInBalanceDue = DBConfig.checkRecordExists(BALANCE_DUE_TABLE, property, unit, billType);
+            boolean recordExistsInPaymentHistory = checkRecordExists(PAYMENT_HISTORY_TABLE, property, unit, billType, userId);
+            boolean recordExistsInBalanceDue = checkRecordExists(BALANCE_DUE_TABLE, property, unit, billType, userId);
 
             if (!recordExistsInPaymentHistory && !recordExistsInBalanceDue) {
                 showAlert("Error", "Record not found.");
@@ -546,8 +590,6 @@ public class Edit_InvoiceController implements Initializable {
             handleDatabaseError("Database error: Unable to handle invoice update", e);
         }
     }
-
-    // Other necessary methods here...
 
     private boolean checkRecordExists(String tableName, String property, String unit, String billType, int userId) throws SQLException {
         String userIdColumn = tableName.equals("balance_due") ? "b_user_id" : "p_user_id";
@@ -614,8 +656,6 @@ public class Edit_InvoiceController implements Initializable {
         }
     }
 
-    // Other methods remain unchanged...
-
     @FXML
     void edit_invoice_btn_clicked(MouseEvent event) {
         loadFXMLView("/controller/EditInvoiceView.fxml", "RentEase: Edit Invoice", event);
@@ -628,13 +668,11 @@ public class Edit_InvoiceController implements Initializable {
 
     @FXML
     void monthly_deposit_chk_box_clicked(ActionEvent event) {
-        // Enable or disable the monthly deposit text field based on the checkbox state
         monthly_deposit_text.setDisable(!monthly_deposit_chk_box.isSelected());
     }
 
     @FXML
     void monthly_advance_chk_box_clicked(ActionEvent event) {
-        // Enable or disable the monthly advance text field based on the checkbox state
         monthly_advance_text.setDisable(!monthly_advance_chk_box.isSelected());
     }
 
@@ -715,4 +753,4 @@ public class Edit_InvoiceController implements Initializable {
         e.printStackTrace();
         showAlert("Error", message + ": " + e.getMessage());
     }
-}
+    }
