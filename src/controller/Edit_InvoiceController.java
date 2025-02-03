@@ -26,7 +26,7 @@ public class Edit_InvoiceController implements Initializable {
     private Text balance_due_btn;
 
     @FXML
-    private ComboBox<String> bill_type_cmb_box; // Changed to ComboBox<String> for type safety
+    private ComboBox<String> bill_type_cmb_box; 
 
     @FXML
     private Text create_invoice_btn;
