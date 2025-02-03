@@ -1,7 +1,11 @@
 package controller;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -82,9 +86,9 @@ public class HelpsFAQsController {
     }
     
     @FXML
-    void help_faqs_btn_clicked(MouseEvent event) {
-        // Show help message directly in this method
-        showAlert(Alert.AlertType.INFORMATION, "Need Help", "If you need assistance, feel free to contact us at support@rentease.com.");
+    void help_faqs_btn_clicked(ActionEvent event) {
+        // Open Gmail with a pre-filled email to support@rentease.com
+        openGmail("support@rentease.com");
     }
 
     private void loadScene(MouseEvent event, String fxmlPath) {
@@ -99,11 +103,26 @@ public class HelpsFAQsController {
             e.printStackTrace();
         }
     }
+
+    private void openGmail(String recipient) {
+        try {
+            String mailto = "https://mail.google.com/mail/?view=cm&fs=1&to=" + recipient;
+            URI mailUri = new URI(mailto);
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(mailUri);
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Error", "Opening the default browser is not supported on this environment.");
+            }
+        } catch (IOException | URISyntaxException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to open Gmail: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
-        alert.setHeaderText("Need Help?");
+        alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
