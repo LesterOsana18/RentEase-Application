@@ -189,7 +189,7 @@
                         <Font name="SofiaPro" size="19.0" />
                      </font>
                   </Text>
-                  <Button layoutX="805.0" layoutY="523.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="112.0" style="-fx-background-radius: 20;" styleClass="btn-button" stylesheets="@../styles/invoice.css" text="Help" />
+                  <Button fx:id="help_faqs_btn" layoutX="805.0" layoutY="523.0" mnemonicParsing="false" onAction="#help_faqs_btn_clicked" prefHeight="40.0" prefWidth="112.0" style="-fx-background-radius: 20;" styleClass="btn-button" stylesheets="@../styles/invoice.css" text="Help" />
                </children>
             </Pane>
          </children>
