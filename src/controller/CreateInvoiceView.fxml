@@ -257,7 +257,7 @@
                         <Font name="SofiaPro" size="13.19" />
                      </font>
                   </TextField>
-                  <Button fx:id="clear_btn" layoutX="702.0" layoutY="547.0" mnemonicParsing="false" onAction="#clear_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67;" styleClass="btn-button" stylesheets="@../styles/invoice.css" text="CLEAR" textFill="WHITE" wrapText="true">
+                  <Button fx:id="clear_btn" layoutX="702.0" layoutY="547.0" mnemonicParsing="false" onAction="#clear_btn_clicked" prefHeight="30.0" prefWidth="99.0" style="-fx-background-radius: 16.67; -fx-background-color: CC0C0C;" styleClass="btn-button" stylesheets="@../styles/invoice.css" text="CLEAR" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
