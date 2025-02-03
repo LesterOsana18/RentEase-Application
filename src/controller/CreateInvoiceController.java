@@ -71,7 +71,7 @@ public class CreateInvoiceController implements Initializable  {
         alert.showAndWait();
     }
 	
-    @FXML private Button add_btn, logout_btn;
+    @FXML private Button add_btn, logout_btn, clear_btn;
     @FXML private Text balance_due_btn, create_invoice_btn, dashboard_btn;
     @FXML private DatePicker date_picker;
     @FXML private Text edit_invoice_btn, help_btn, my_profile_btn, payment_history_btn;
@@ -344,6 +344,11 @@ public class CreateInvoiceController implements Initializable  {
     @FXML
     void status_pending_chk_box_clicked(ActionEvent event) {
 
+    }
+    
+    @FXML
+    void clear_btn_clicked(ActionEvent event) {
+    	
     }
 
 }
