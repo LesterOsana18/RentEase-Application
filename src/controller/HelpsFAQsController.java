@@ -1,11 +1,16 @@
 package controller;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
@@ -36,135 +41,89 @@ public class HelpsFAQsController {
 
     @FXML
     private Text payment_history_btn;
+    
+    @FXML
+    private Button help_faqs_btn;
 
     @FXML
     void balance_due_btn_clicked(MouseEvent event) {
-        try {
-            // Load the Balance Due FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/BalanceDueView.fxml"));
-            Parent BalanceDueRoot = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(BalanceDueRoot);
-            stage.setScene(scene);
-            stage.setTitle("RentEase: Balance Due");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadScene(event, "/controller/BalanceDueView.fxml");
     }
 
     @FXML
     void create_invoice_btn(MouseEvent event) {
-        try {
-            // Load the Helps & FAQs FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/CreateInvoiceView.fxml"));
-            Parent CreateInvoiceRoot = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(CreateInvoiceRoot);
-            stage.setScene(scene);
-            stage.setTitle("RentEase: Create Invoice");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadScene(event, "/controller/CreateInvoiceView.fxml");
     }
 
     @FXML
     void dashboard_btn_clicked(MouseEvent event) {
-        try {
-            // Load the Helps & FAQs FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/DashboardView.fxml"));
-            Parent DashboardRoot = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(DashboardRoot);
-            stage.setScene(scene);
-            stage.setTitle("RentEase: Dashboard");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadScene(event, "/controller/DashboardView.fxml");
     }
 
     @FXML
     void edit_invoice_btn_clicked(MouseEvent event) {
-        try {
-            // Load the Helps & FAQs FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/EditInvoiceView.fxml"));
-            Parent EditInvoiceRoot = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(EditInvoiceRoot);
-            stage.setScene(scene);
-            stage.setTitle("RentEase: Edit Invoice");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadScene(event, "/controller/EditInvoiceView.fxml");
     }
 
     @FXML
     void help_btn_clicked(MouseEvent event) {
-
+        loadScene(event, "/controller/HelpsFAQsView.fxml");
     }
 
     @FXML
     void logout_btn_clicked(MouseEvent event) {
-
+        // Implement logout logic here
     }
 
     @FXML
     void my_profile_btn_clicked(MouseEvent event) {
-        try {
-            // Load the My Profile FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/MyProfileView.fxml"));
-            Parent MyProfileRoot = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(MyProfileRoot);
-            stage.setScene(scene);
-            stage.setTitle("RentEase: My Profile");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadScene(event, "/controller/MyProfileView.fxml");
     }
 
     @FXML
     void payment_history_btn_clicked(MouseEvent event) {
-    	try {
-            // Load the Payment History FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/PaymentHistoryView.fxml"));
-            Parent PaymentHistoryRoot = loader.load();
+        loadScene(event, "/controller/PaymentHistoryView.fxml");
+    }
+    
+    @FXML
+    void help_faqs_btn_clicked(ActionEvent event) {
+        // Open Gmail with a pre-filled email to support@rentease.com
+        openGmail("support@rentease.com");
+    }
 
-            // Get the current stage (window) from the event source
+    private void loadScene(MouseEvent event, String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(PaymentHistoryRoot);
+            Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("RentEase: Payment History");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private void openGmail(String recipient) {
+        try {
+            String mailto = "https://mail.google.com/mail/?view=cm&fs=1&to=" + recipient;
+            URI mailUri = new URI(mailto);
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(mailUri);
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Error", "Opening the default browser is not supported on this environment.");
+            }
+        } catch (IOException | URISyntaxException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to open Gmail: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

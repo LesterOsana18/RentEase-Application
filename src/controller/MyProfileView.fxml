@@ -150,7 +150,7 @@
                         <Font name="SofiaPro-SemiBold" size="32.64" />
                      </font>
                   </Text>
-                  <TextField fx:id="rent_bill_text_field" layoutX="31.0" layoutY="73.0" prefHeight="40.28" prefWidth="429.75" stylesheets="@../styles/invoice.css" text="CURRENT USERNAME">
+                  <TextField fx:id="current_username_text_field" editable="false" layoutX="31.0" layoutY="73.0" prefHeight="40.28" prefWidth="429.75" stylesheets="@../styles/invoice.css" text="CURRENT USERNAME">
                      <font>
                         <Font name="SofiaPro" size="13.19" />
                      </font>
@@ -160,7 +160,7 @@
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
                   </Button>
-                  <TextField fx:id="rent_bill_text_field2" layoutX="482.0" layoutY="73.0" prefHeight="40.28" prefWidth="429.75" promptText="NEW USERNAME" stylesheets="@../styles/invoice.css">
+                  <TextField fx:id="new_username_text_field" layoutX="482.0" layoutY="73.0" prefHeight="40.28" prefWidth="429.75" promptText="NEW USERNAME" stylesheets="@../styles/invoice.css">
                      <font>
                         <Font name="SofiaPro" size="13.19" />
                      </font>
