@@ -645,4 +645,146 @@ public class DBConfig {
 
         return invoices;
     }
+    
+    public static String getUsername(Stage stage) {
+        String username = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            int userId = getUserId(stage);
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            preparedStatement = connection.prepareStatement("SELECT username FROM users WHERE user_id = ?");
+            preparedStatement.setInt(1, userId);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                username = resultSet.getString("username");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return username;
+    }
+    
+    public static void updateUsername(Stage stage, String newUsername) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            int userId = getUserId(stage);
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            preparedStatement = connection.prepareStatement("UPDATE users SET username = ? WHERE user_id = ?");
+            preparedStatement.setString(1, newUsername);
+            preparedStatement.setInt(2, userId);
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Username updated successfully.");
+            } else {
+                System.out.println("Failed to update username.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void deleteUser(Stage stage) {
+        Connection connection = null;
+        PreparedStatement deleteUserStmt = null;
+        PreparedStatement deletePaymentHistoryStmt = null;
+        PreparedStatement deleteBalanceDueStmt = null;
+
+        try {
+            int userId = getUserId(stage);
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            // Delete from payment_history
+            deletePaymentHistoryStmt = connection.prepareStatement("DELETE FROM payment_history WHERE p_user_id = ?");
+            deletePaymentHistoryStmt.setInt(1, userId);
+            deletePaymentHistoryStmt.executeUpdate();
+
+            // Delete from balance_due
+            deleteBalanceDueStmt = connection.prepareStatement("DELETE FROM balance_due WHERE b_user_id = ?");
+            deleteBalanceDueStmt.setInt(1, userId);
+            deleteBalanceDueStmt.executeUpdate();
+
+            // Delete from users
+            deleteUserStmt = connection.prepareStatement("DELETE FROM users WHERE user_id = ?");
+            deleteUserStmt.setInt(1, userId);
+            deleteUserStmt.executeUpdate();
+
+            System.out.println("User and related data deleted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (deleteUserStmt != null) {
+                try {
+                    deleteUserStmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (deletePaymentHistoryStmt != null) {
+                try {
+                    deletePaymentHistoryStmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (deleteBalanceDueStmt != null) {
+                try {
+                    deleteBalanceDueStmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
