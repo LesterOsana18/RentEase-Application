@@ -1,10 +1,11 @@
 package controller;
 
 import java.io.IOException;
-
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,10 +17,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class Edit_InvoiceController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class Edit_InvoiceController implements Initializable {
 
     @FXML
     private Text balance_due_btn;
+
+    @FXML
+    private ComboBox<String> bill_type_cmb_box; // Changed to ComboBox<String> for type safety
 
     @FXML
     private Text create_invoice_btn;
@@ -89,7 +96,7 @@ public class Edit_InvoiceController {
 
     @FXML
     private CheckBox status_pending_chk_box;
-    
+
     @FXML
     private TextField total_amount_text_field;
 
@@ -102,100 +109,57 @@ public class Edit_InvoiceController {
     @FXML
     private TextField wifi_text_field;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Populate the ComboBox with items
+        bill_type_cmb_box.setItems(FXCollections.observableArrayList(
+            "Rent Bill", "Electricity Bill", "Water Bill", "Wi-Fi Bill"
+        ));
+    }
+
     @FXML
     void balance_due_btn_clicked(MouseEvent event) {
-        try {
-            // Load the Balance Due FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/BalanceDueView.fxml"));
-            Parent paymentHistoryRoot = loader.load();
+        loadScene(event, "/controller/BalanceDueView.fxml");
+    }
 
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+    @FXML
+    void bill_type_cmb_box_selected(ActionEvent event) {
 
-            // Set the new scene
-            Scene scene = new Scene(paymentHistoryRoot);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
     void create_invoice_btn(MouseEvent event) {
-        try {
-            // Load the Helps & FAQs FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/CreateInvoiceView.fxml"));
-            Parent Create_InvoiceRoot = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(Create_InvoiceRoot);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadScene(event, "/controller/CreateInvoiceView.fxml");
     }
 
     @FXML
     void dashboard_btn_clicked(MouseEvent event) {
-        try {
-            // Load the Helps & FAQs FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/DashboardView.fxml"));
-            Parent DashboardRoot = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(DashboardRoot);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadScene(event, "/controller/DashboardView.fxml");
     }
 
     @FXML
     void delete_btn_clicked(ActionEvent event) {
-
+        
     }
 
     @FXML
     void edit_btn_clicked(ActionEvent event) {
-
+        
     }
 
     @FXML
     void edit_invoice_btn_clicked(MouseEvent event) {
-
+        loadScene(event, "/controller/EditInvoiceView.fxml");
     }
 
     @FXML
     void help_btn_clicked(MouseEvent event) {
-        try {
-            // Load the Helps & FAQs FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/HelpsFAQsView.fxml"));
-            Parent Helps_FaqsRoot = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(Helps_FaqsRoot);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadScene(event, "/controller/HelpsFAQsView.fxml");
     }
 
     @FXML
     void logout_btn_clicked(MouseEvent event) {
-
+        
     }
 
     @FXML
@@ -210,40 +174,12 @@ public class Edit_InvoiceController {
 
     @FXML
     void my_profile_btn_clicked(MouseEvent event) {
-        try {
-            // Load the My Profile FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/MyProfileView.fxml"));
-            Parent MyProfileRoot = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(MyProfileRoot);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadScene(event, "/controller/MyProfileView.fxml");
     }
 
     @FXML
     void payment_history_btn_clicked(MouseEvent event) {
-    	try {
-            // Load the Payment History FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/PaymentHistoryView.fxml"));
-            Parent paymentHistoryRoot = loader.load();
-
-            // Get the current stage (window) from the event source
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(paymentHistoryRoot);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadScene(event, "/controller/PaymentHistoryView.fxml");
     }
 
     @FXML
@@ -271,4 +207,16 @@ public class Edit_InvoiceController {
 
     }
 
+    private void loadScene(MouseEvent event, String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
