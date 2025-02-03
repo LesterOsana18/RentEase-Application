@@ -33,15 +33,14 @@ public class Edit_InvoiceController implements Initializable {
     @FXML private ComboBox<String> bill_type_cmb_box, property_cmb_box, unit_cmb_box;
     @FXML private DatePicker date_picker;
     @FXML private Button delete_btn, edit_btn, logout_btn;
-    @FXML private TextField electricity_text_field, monthly_advance_text, monthly_deposit_text, note_text, rent_bill_text_field, total_amount_text_field, water_text_field, wifi_text_field;
+    @FXML private TextField electricity_text_field, monthly_advance_text, monthly_deposit_text, note_text, rent_bill_text_field, paid_amount_text_field, water_text_field, wifi_text_field;
     @FXML private CheckBox monthly_advance_chk_box, monthly_deposit_chk_box, repeat_monthly_chk_box, status_overdue_chk_box, status_paid_chk_box, status_partially_chk_box, status_pending_chk_box;
 
     // Constants
     private static final String PAYMENT_HISTORY_QUERY = "SELECT DISTINCT property FROM payment_history UNION SELECT DISTINCT property FROM balance_due";
     private static final String UNITS_QUERY = "SELECT DISTINCT unit FROM payment_history WHERE property = ? UNION SELECT DISTINCT unit FROM balance_due WHERE property = ?";
-    private static final String PROPERTY_DETAILS_QUERY = "SELECT * FROM payment_history WHERE property = ?";
+    private static final String PROPERTY_DETAILS_QUERY = "SELECT * FROM payment_history WHERE property = ? UNION SELECT * FROM balance_due WHERE property = ?";
     private static final String UNIT_DETAILS_QUERY = "SELECT * FROM payment_history WHERE property = ? AND unit = ? UNION SELECT * FROM balance_due WHERE property = ? AND unit = ?";
-    private static final String DELETE_QUERY = "DELETE FROM payment_history WHERE property = ? AND unit = ? AND bill_type = ?";
     private static final String UPDATE_QUERY_TEMPLATE = "UPDATE %s SET date = ?, amount = ?, deposit = ?, advanced = ?, status = ?, note = ? WHERE property = ? AND unit = ? AND bill_type = ?";
     private static final String PAYMENT_HISTORY_TABLE = "payment_history";
     private static final String BALANCE_DUE_TABLE = "balance_due";
@@ -71,7 +70,6 @@ public class Edit_InvoiceController implements Initializable {
         // ComboBox event handlers
         property_cmb_box.setOnMouseClicked(e -> loadProperties());
         unit_cmb_box.setOnMouseClicked(e -> loadUnits());
-        property_cmb_box.setOnAction(e -> loadPropertyDetails());
         unit_cmb_box.setOnAction(e -> loadUnitDetails());
         bill_type_cmb_box.setOnAction(e -> enableBillTypeField());
     }
@@ -84,8 +82,8 @@ public class Edit_InvoiceController implements Initializable {
             if (selectedCheckBox != status_pending_chk_box) status_pending_chk_box.setSelected(false);
             if (selectedCheckBox != status_overdue_chk_box) status_overdue_chk_box.setSelected(false);
 
-            // Enable/disable total amount text field based on status
-            total_amount_text_field.setDisable(selectedCheckBox != status_partially_chk_box);
+            // Enable/disable paid amount text field based on status
+            paid_amount_text_field.setDisable(selectedCheckBox != status_partially_chk_box);
         }
     }
 
@@ -140,9 +138,16 @@ public class Edit_InvoiceController implements Initializable {
     }
 
     private void loadPropertyDetails() {
+        String selectedProperty = property_cmb_box.getValue();
+        String selectedUnit = unit_cmb_box.getValue();
+        if (selectedProperty == null || selectedUnit == null) {
+            return;
+        }
+
         try (Connection connection = DBConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(PROPERTY_DETAILS_QUERY)) {
-            statement.setString(1, property_cmb_box.getValue());
+            statement.setString(1, selectedProperty);
+            statement.setString(2, selectedProperty);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     populatePropertyDetails(resultSet);
@@ -167,8 +172,8 @@ public class Edit_InvoiceController implements Initializable {
                 break;
             case "Partially Paid":
                 status_partially_chk_box.setSelected(true);
-                total_amount_text_field.setText(String.valueOf(resultSet.getDouble("amount")));
-                total_amount_text_field.setDisable(false);
+                paid_amount_text_field.setText(String.valueOf(resultSet.getDouble("amount")));
+                paid_amount_text_field.setDisable(false);
                 break;
             case "Pending Payment":
                 status_pending_chk_box.setSelected(true);
@@ -178,17 +183,39 @@ public class Edit_InvoiceController implements Initializable {
                 break;
         }
 
+        if (resultSet.getInt("deposit") > 0) {
+            monthly_deposit_chk_box.setSelected(true);
+            monthly_deposit_text.setDisable(false);
+        } else {
+            monthly_deposit_chk_box.setSelected(false);
+            monthly_deposit_text.setDisable(true);
+        }
+
+        if (resultSet.getInt("advanced") > 0) {
+            monthly_advance_chk_box.setSelected(true);
+            monthly_advance_text.setDisable(false);
+        } else {
+            monthly_advance_chk_box.setSelected(false);
+            monthly_advance_text.setDisable(true);
+        }
+
         enableMiscellaneousAndStatus();
     }
 
     private void loadUnitDetails() {
         enableMiscellaneousAndStatus();
+        String selectedProperty = property_cmb_box.getValue();
+        String selectedUnit = unit_cmb_box.getValue();
+        if (selectedProperty == null || selectedUnit == null) {
+            return;
+        }
+
         try (Connection connection = DBConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(UNIT_DETAILS_QUERY)) {
-            statement.setString(1, property_cmb_box.getValue());
-            statement.setString(2, unit_cmb_box.getValue());
-            statement.setString(3, property_cmb_box.getValue());
-            statement.setString(4, unit_cmb_box.getValue());
+            statement.setString(1, selectedProperty);
+            statement.setString(2, selectedUnit);
+            statement.setString(3, selectedProperty);
+            statement.setString(4, selectedUnit);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     populateUnitDetails(resultSet);
@@ -202,9 +229,17 @@ public class Edit_InvoiceController implements Initializable {
     private void populateUnitDetails(ResultSet resultSet) throws SQLException {
         String billType = resultSet.getString("bill_type");
         double amount = resultSet.getDouble("amount");
+        int deposit = resultSet.getInt("deposit");
+        int advanced = resultSet.getInt("advanced");
+        int totalMonths = 1 + deposit + advanced;
+
         switch (billType) {
             case "Rent":
-                rent_bill_text_field.setText(String.valueOf(amount));
+                if (totalMonths > 0) {
+                    rent_bill_text_field.setText(String.valueOf(amount / totalMonths));
+                } else {
+                    rent_bill_text_field.setText(String.valueOf(amount));
+                }
                 break;
             case "Electricity":
                 electricity_text_field.setText(String.valueOf(amount));
@@ -216,6 +251,51 @@ public class Edit_InvoiceController implements Initializable {
                 wifi_text_field.setText(String.valueOf(amount));
                 break;
         }
+
+        // Auto-fill the date picker based on the date in the database
+        date_picker.setValue(resultSet.getDate("date").toLocalDate());
+
+        // Populate monthly deposit and advance fields
+        monthly_deposit_text.setText(String.valueOf(deposit));
+        monthly_advance_text.setText(String.valueOf(advanced));
+
+        // Enable the checkboxes if the values are greater than 0
+        if (deposit > 0) {
+            monthly_deposit_chk_box.setSelected(true);
+            monthly_deposit_text.setDisable(false);
+        } else {
+            monthly_deposit_chk_box.setSelected(false);
+            monthly_deposit_text.setDisable(true);
+        }
+
+        if (advanced > 0) {
+            monthly_advance_chk_box.setSelected(true);
+            monthly_advance_text.setDisable(false);
+        } else {
+            monthly_advance_chk_box.setSelected(false);
+            monthly_advance_text.setDisable(true);
+        }
+
+        // Automatically check the status checkboxes based on the retrieved status
+        String status = resultSet.getString("status");
+        switch (status) {
+            case "Paid":
+                status_paid_chk_box.setSelected(true);
+                break;
+            case "Partially Paid":
+                status_partially_chk_box.setSelected(true);
+                paid_amount_text_field.setText(String.valueOf(amount));
+                paid_amount_text_field.setDisable(false);
+                break;
+            case "Pending Payment":
+                status_pending_chk_box.setSelected(true);
+                break;
+            case "Overdue Payment":
+                status_overdue_chk_box.setSelected(true);
+                break;
+        }
+
+        enableMiscellaneousAndStatus();
     }
 
     private String getBillTypeAmount(String billType) {
@@ -236,6 +316,9 @@ public class Edit_InvoiceController implements Initializable {
     private void enableBillTypeField() {
         disableAllBillTypeFields();
         String selectedBillType = bill_type_cmb_box.getValue();
+        if (selectedBillType == null) {
+            return;
+        }
         switch (selectedBillType) {
             case "Rent":
                 rent_bill_text_field.setDisable(false);
@@ -275,14 +358,15 @@ public class Edit_InvoiceController implements Initializable {
         status_partially_chk_box.setSelected(false);
         status_pending_chk_box.setSelected(false);
         status_overdue_chk_box.setSelected(false);
-        total_amount_text_field.clear();
+        paid_amount_text_field.clear();
+        disableAllBillTypeFields();
     }
 
     private void disableMiscellaneousAndStatus() {
         monthly_deposit_text.setDisable(true);
         monthly_advance_text.setDisable(true);
         note_text.setDisable(true);
-        total_amount_text_field.setDisable(true);
+        paid_amount_text_field.setDisable(true);
         status_paid_chk_box.setDisable(true);
         status_partially_chk_box.setDisable(true);
         status_pending_chk_box.setDisable(true);
@@ -296,7 +380,7 @@ public class Edit_InvoiceController implements Initializable {
         monthly_deposit_text.setDisable(false);
         monthly_advance_text.setDisable(false);
         note_text.setDisable(false);
-        total_amount_text_field.setDisable(false);
+        paid_amount_text_field.setDisable(false);
         status_paid_chk_box.setDisable(false);
         status_partially_chk_box.setDisable(false);
         status_pending_chk_box.setDisable(false);
@@ -337,22 +421,29 @@ public class Edit_InvoiceController implements Initializable {
             return;
         }
 
-        try (Connection connection = DBConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
+        boolean deletedFromPaymentHistory = deleteRecordFromTable(PAYMENT_HISTORY_TABLE, property, unit, billType);
+        boolean deletedFromBalanceDue = deleteRecordFromTable(BALANCE_DUE_TABLE, property, unit, billType);
 
+        if (deletedFromPaymentHistory || deletedFromBalanceDue) {
+            showAlert("Success", "Record deleted successfully.");
+            clearFields();
+        } else {
+            showAlert("Error", "Record not found or could not be deleted.");
+        }
+    }
+
+    private boolean deleteRecordFromTable(String tableName, String property, String unit, String billType) {
+        String deleteQuery = String.format("DELETE FROM %s WHERE property = ? AND unit = ? AND bill_type = ?", tableName);
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
             statement.setString(1, property);
             statement.setString(2, unit);
             statement.setString(3, billType);
             int rowsAffected = statement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                showAlert("Success", "Record deleted successfully.");
-                clearFields();
-            } else {
-                showAlert("Error", "Record not found or could not be deleted.");
-            }
+            return rowsAffected > 0;
         } catch (SQLException e) {
-            handleDatabaseError("Database error: Unable to delete record", e);
+            handleDatabaseError("Database error: Unable to delete record from " + tableName, e);
+            return false;
         }
     }
 
@@ -371,6 +462,11 @@ public class Edit_InvoiceController implements Initializable {
         if (property == null || unit == null || billType == null || status == null || date == null) {
             showAlert("Error", "Please fill all required fields and select a status.");
             return;
+        }
+
+        // Calculate the new amount if the monthly deposit or advance check boxes are checked and their values are greater than or equal to 1
+        if (monthly_deposit_chk_box.isSelected() && depositMonths >= 1 || monthly_advance_chk_box.isSelected() && advanceMonths >= 1) {
+            amount = amount + (amount * (depositMonths + advanceMonths));
         }
 
         boolean recordExistsInPaymentHistory = checkRecordExists(PAYMENT_HISTORY_TABLE, property, unit, billType);
@@ -509,9 +605,25 @@ public class Edit_InvoiceController implements Initializable {
         }
     }
 
+    // Utility method to load FXML views
+    private void loadFXMLView(String fxmlPath, String title, ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle(title);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Unable to load view: " + e.getMessage());
+        }
+    }
+
     // Utility method to handle database errors
     private void handleDatabaseError(String message, SQLException e) {
         e.printStackTrace();
         showAlert("Error", message + ": " + e.getMessage());
     }
- }
+}

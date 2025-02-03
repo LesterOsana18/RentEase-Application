@@ -250,7 +250,7 @@
                         <Font name="SofiaPro-SemiBold" size="11.11" />
                      </font>
                   </Button>
-                  <TextField fx:id="total_amount_text_field" disable="true" layoutX="288.0" layoutY="421.0" prefHeight="40.0" prefWidth="171.0" promptText="TOTAL AMOUNT" stylesheets="@../styles/invoice.css">
+                  <TextField fx:id="paid_amount_text_field" disable="true" layoutX="288.0" layoutY="421.0" prefHeight="40.0" prefWidth="171.0" promptText="PAID AMOUNT" stylesheets="@../styles/invoice.css">
                      <font>
                         <Font name="SofiaPro" size="13.19" />
                      </font>
